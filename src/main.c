@@ -11,14 +11,56 @@
 
 #include <string.h>
 #include "stm32f1xx.h"
+#include <stdlib.h>
+
+
+
+#define MAX_MOVES 1000
+#define JOYSTICK_STATE_1 HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)
+#define JOYSTICK_STATE_2 HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)
+
 
 
 TIM_HandleTypeDef timer;
 TIM_Encoder_InitTypeDef encoder;
 UART_HandleTypeDef uart;
-char message[20];
+char message[50];
 
 //direction to PA_9 -- step pulse to PA_8
+
+enum axis {
+	F1,
+	F2,
+	Z,
+	U
+};
+
+enum direction {
+	STOP,
+	CLOCKWISE,
+	ANTICLOCKWISE
+};
+
+struct move {
+    int32_t rotation;
+    enum direction direction;
+    enum axis axis;
+};
+
+struct move moves[MAX_MOVES];
+
+unsigned int current_move = 0;
+// volatile must be applied because the variable is changed during the interrupt routine
+volatile int in_move = 0;
+volatile enum direction dir = CLOCKWISE;
+
+
+int32_t abs_val(int32_t a) {
+	if (a < 0) {
+		return -a;
+	}
+	return a;
+}
 
 
 void send_string(char* s)
@@ -27,52 +69,170 @@ void send_string(char* s)
 }
 
 
-void servo_left() {
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
-}
-
-void servo_right() {
+void F1_start_clk() {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
-//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
-//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
 }
 
-void servo_f2_start() {
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
-//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
-//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
-}
 
-void servo_f2_stop() {
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
-//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
-//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
-}
-
-void servo_f1_start() {
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
+void F1_start_ant() {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
 }
 
-void servo_f1_stop() {
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+
+void F1_stop() {
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
+}
+
+
+void begin_movement()
+{
+	TIM2->CNT = 0;
+	struct move this;
+	start_position();
+	while(1)
+	{
+		for (int i = 0; i < current_move; i++)
+		{
+			this = moves[i];
+			rotate(this.axis, this.direction, this.rotation);
+		}
+		start_position();
+	}
+}
+
+
+void start_position()
+{
+	int32_t start_position_distance = 0;
+
+	for (int i = 0; i < current_move; i++)
+	{
+		if (moves[i].direction == CLOCKWISE)
+		{
+			start_position_distance += moves[i].rotation;
+		}
+		else
+		{
+			start_position_distance -= moves[i].rotation;
+		}
+	}
+	// if start_position_distance is positive then clockwise otherwise anti
+	if (start_position_distance > 0)
+	{
+		rotate(F1, CLOCKWISE, start_position_distance);
+	}
+	else
+	{
+		rotate(F1, ANTICLOCKWISE, start_position_distance);
+	}
+}
+
+
+void rotate(enum axis ax, enum direction dir, int32_t value)
+{
+    int32_t old_val = 0;
+    int32_t total = 0;
+    // 435 800
+    old_val = TIM2->CNT;
+
+
+	if (ax == F1)
+	{
+		if (dir == CLOCKWISE)
+		{
+	    	F1_start_clk();
+		}
+		else
+		{
+			F1_start_ant();
+		}
+		while (total < value)
+		{
+			int32_t diff = TIM2->CNT - old_val;
+			if (diff < 3000 && diff > -3000)
+				total += abs_val(diff);
+
+			sprintf(message, "diff = %d\n", diff);
+			send_string(message);
+			sprintf(message, "Suma: %d\n", total);
+			send_string(message);
+			old_val = TIM2->CNT;
+
+			HAL_Delay(50);
+		 }
+    	 F1_stop();
+	}
+}
+
+
+void EXTI15_10_IRQHandler()
+{
+	if (in_move)
+	{
+		in_move = 0;
+	}
+	else if (!in_move)
+	{
+		in_move = 1;
+	}
+
+	send_string("Interrupt! \n");
+	EXTI->PR = EXTI_PR_PR13;
+}
+
+
+void EXTI9_5_IRQHandler()
+{
+	if (EXTI->PR & EXTI_PR_PR9)
+	{
+		dir = CLOCKWISE;
+		send_string("CLOCKWISE! \n");
+	}
+	else if (EXTI->PR & EXTI_PR_PR8)
+	{
+		dir = ANTICLOCKWISE;
+		send_string("ANTICLOCKWISE! \n");
+	}
+	else if (EXTI->PR & EXTI_PR_PR6)
+	{
+		begin_movement();
+		send_string("START! \n");
+	}
+	EXTI->PR = EXTI_PR_PR9;
+	EXTI->PR = EXTI_PR_PR8;
+	EXTI->PR = EXTI_PR_PR6;
+}
+
+
+void TIM2_IRQHandler()
+{
+	send_string("clock interrupt\n");
+	TIM2->SR &= ~TIM_SR_UIF;
+}
+
+int get_direction()
+{
+	if (!JOYSTICK_STATE_1 && !JOYSTICK_STATE_2)
+	{
+		return STOP;
+	}
+	if (JOYSTICK_STATE_1)
+	{
+		return CLOCKWISE;
+	}
+	if (JOYSTICK_STATE_2)
+	{
+		return ANTICLOCKWISE;
+	}
 }
 
 // TIM1 PIN PA8 PA9 FI_1
@@ -80,12 +240,7 @@ void servo_f1_stop() {
 // TIM3 PIN PA6 PA7
 // TIM4 PIN PB6 PB7
 
-int16_t abs_val(int16_t a) {
-	if (a < 0) {
-		return -a;
-	}
-	return a;
-}
+
 
 int main(void)
 {
@@ -111,11 +266,18 @@ int main(void)
 
 	     // BOARD BUTTON
 	     gpio.Pin = GPIO_PIN_13;
-	     gpio.Mode = GPIO_MODE_INPUT;
+	     gpio.Mode = GPIO_MODE_IT_RISING_FALLING;
 	     gpio.Pull = GPIO_PULLUP;
 	     HAL_GPIO_Init(GPIOC, &gpio);
+	     HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 	     // BOARD BUTTON
+
+	     gpio.Pin = GPIO_PIN_9 | GPIO_PIN_8 | GPIO_PIN_6;
+	     gpio.Mode = GPIO_MODE_IT_RISING;
+	     gpio.Pull = GPIO_PULLUP;
+	     HAL_GPIO_Init(GPIOC, &gpio);
+	     HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
 	     /*
 	     // ENCODER 1
@@ -155,13 +317,13 @@ int main(void)
 	     	    // ENCODER
 
 */
-	     // ENCODER 2
+	     // ENCODER 2 AXIS F1
 	     GPIO_InitTypeDef GPIO_InitStruct;
 	     	     __HAL_RCC_TIM2_CLK_ENABLE();
 
 	     	     GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
 	     	     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-	              GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+	             GPIO_InitStruct.Pull = GPIO_PULLDOWN;
 	     	     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 
 	     	    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -215,24 +377,52 @@ int main(void)
 		    HAL_UART_Init(&uart);
 		    // UART
 
+
+
 	    send_string("message\n");
 
-	    while (1) {
-
-	            int16_t count1 = 0;
-	            servo_f1_start();
-	            servo_f2_start();
-//	            count1=TIM1->CNT;
-//	            sprintf(message, "FI 1: %d\r\n", count1);
-//	            send_string(message);
 
 
-//	            while ((count1 = abs_val(TIM2->CNT)) < 8192) {
-//
-//	            	sprintf(message, "F1 2: %d\r\n", count1);
-//	            		            send_string(message);
-//	            }
-//	            servo_stop();
-//	            break;
-	     };
+	    int32_t old_val = 0;
+	    int32_t total = 0;
+	    // 435 800
+	    old_val = TIM2->CNT;
+
+	    while(1)
+	    {
+//	    	if (in_move)
+//	    	{
+//	    		if (dir == CLOCKWISE)
+//	    			F1_start_clk();
+//	    		else
+//	    			F1_start_ant();
+//	    	}
+//	    	while (in_move)
+//	    	{
+		    	int32_t diff = TIM2->CNT - old_val;
+		    	if (diff < 3000 && diff > -3000)
+		    		total += abs_val(diff);
+
+		    	sprintf(message, "diff = %d\n", diff);
+		    	send_string(message);
+		    	sprintf(message, "Suma: %d\n", total);
+		    	send_string(message);
+//	    	}
+//	    	if (!in_move)
+//	    	{
+//	    		F1_stop();
+//	    		if (total > 0)
+//	    		{
+//	    			struct move mv;
+//	    			mv.axis = F1;
+//	   	    		mv.direction = dir;
+//	   	    		mv.rotation = total;
+//	   	    		moves[current_move++] = mv;
+//	    		}
+//	    	}
+
+	    	old_val = TIM2->CNT;
+
+	     	HAL_Delay(50);
+	    }
 }

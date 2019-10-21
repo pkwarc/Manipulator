@@ -31,10 +31,10 @@ endif
 all: Manipulator.elf
 
 # Tool invocations
-Manipulator.elf: $(OBJS) $(USER_OBJS) /home/erst/Documents/STM/Manipulator/LinkerScript.ld
+Manipulator.elf: $(OBJS) $(USER_OBJS) /home/kwarc/Documents/STM/Manipulator/LinkerScript.ld
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU GCC Linker'
-	arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -T"/home/erst/Documents/STM/Manipulator/LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "Manipulator.elf" @"objects.list" $(USER_OBJS) $(LIBS) -lm
+	arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -T"/home/kwarc/Documents/STM/Manipulator/LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "Manipulator.elf" @"objects.list" $(USER_OBJS) $(LIBS) -lm
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build

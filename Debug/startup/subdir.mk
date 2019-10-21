@@ -15,7 +15,7 @@ startup/%.o: ../startup/%.s
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Assembler'
 	@echo $(PWD)
-	arm-none-eabi-as -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -I"/home/erst/Documents/STM/Manipulator/HAL_Driver/Inc/Legacy" -I"/home/erst/Documents/STM/Manipulator/Utilities/STM32F1xx_Nucleo" -I"/home/erst/Documents/STM/Manipulator/inc" -I"/home/erst/Documents/STM/Manipulator/CMSIS/device" -I"/home/erst/Documents/STM/Manipulator/CMSIS/core" -I"/home/erst/Documents/STM/Manipulator/HAL_Driver/Inc" -g -o "$@" "$<"
+	arm-none-eabi-as -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -I"/home/kwarc/Documents/STM/Manipulator/HAL_Driver/Inc/Legacy" -I"/home/kwarc/Documents/STM/Manipulator/Utilities/STM32F1xx_Nucleo" -I"/home/kwarc/Documents/STM/Manipulator/inc" -I"/home/kwarc/Documents/STM/Manipulator/CMSIS/device" -I"/home/kwarc/Documents/STM/Manipulator/CMSIS/core" -I"/home/kwarc/Documents/STM/Manipulator/HAL_Driver/Inc" -g -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
