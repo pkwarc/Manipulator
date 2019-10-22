@@ -20,6 +20,26 @@
 #define JOYSTICK_STATE_2 HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)
 
 
+typedef enum {
+	F1,
+	F2,
+	Z,
+	U
+} Axis;
+
+const char* axis_names[] = {"F1", "F2", "Z", "U"};
+const char* dir_names[] = {"CLK", "ANT", "STOP"};
+
+typedef enum {
+	CLOCKWISE,
+	ANTICLOCKWISE,
+	STOP
+} Direction;
+
+
+void begin_movement();
+void start_position();
+void rotate(Axis axis, Direction direction, int32_t value);
 
 TIM_HandleTypeDef timer;
 TIM_Encoder_InitTypeDef encoder;
@@ -28,31 +48,22 @@ char message[50];
 
 //direction to PA_9 -- step pulse to PA_8
 
-enum axis {
-	F1,
-	F2,
-	Z,
-	U
-};
-
-enum direction {
-	STOP,
-	CLOCKWISE,
-	ANTICLOCKWISE
-};
 
 struct move {
     int32_t rotation;
-    enum direction direction;
-    enum axis axis;
+    Direction direction;
+    Axis axis;
 };
 
+
 struct move moves[MAX_MOVES];
+
 
 unsigned int current_move = 0;
 // volatile must be applied because the variable is changed during the interrupt routine
 volatile int in_move = 0;
-volatile enum direction dir = CLOCKWISE;
+volatile Direction dir = CLOCKWISE;
+volatile int man_start = 0;
 
 
 int32_t abs_val(int32_t a) {
@@ -93,23 +104,6 @@ void F1_stop() {
 }
 
 
-void begin_movement()
-{
-	TIM2->CNT = 0;
-	struct move this;
-	start_position();
-	while(1)
-	{
-		for (int i = 0; i < current_move; i++)
-		{
-			this = moves[i];
-			rotate(this.axis, this.direction, this.rotation);
-		}
-		start_position();
-	}
-}
-
-
 void start_position()
 {
 	int32_t start_position_distance = 0;
@@ -126,18 +120,41 @@ void start_position()
 		}
 	}
 	// if start_position_distance is positive then clockwise otherwise anti
+	sprintf(message, "start position distance: %d\n", start_position_distance);
+	send_string(message);
 	if (start_position_distance > 0)
 	{
-		rotate(F1, CLOCKWISE, start_position_distance);
+		rotate(F1, ANTICLOCKWISE, start_position_distance);
 	}
 	else
 	{
-		rotate(F1, ANTICLOCKWISE, start_position_distance);
+		rotate(F1, CLOCKWISE, start_position_distance);
 	}
 }
 
 
-void rotate(enum axis ax, enum direction dir, int32_t value)
+void begin_movement()
+{
+	TIM2->CNT = 0;
+	struct move next;
+	start_position();
+	send_string("begin_movement\n");
+	while(1)
+	{
+		for (int i = 0; i < current_move; i++)
+		{
+			next = moves[i];
+			sprintf(message, "Move: %d, rotation = %d", next.rotation);
+			rotate(next.axis, next.direction, next.rotation);
+		}
+		start_position();
+	}
+}
+
+
+
+
+void rotate(Axis ax, Direction dir, int32_t value)
 {
     int32_t old_val = 0;
     int32_t total = 0;
@@ -167,6 +184,8 @@ void rotate(enum axis ax, enum direction dir, int32_t value)
 			send_string(message);
 			old_val = TIM2->CNT;
 
+			sprintf(message, "Zostalo: %d\n", value - total);
+			send_string(message);
 			HAL_Delay(50);
 		 }
     	 F1_stop();
@@ -204,12 +223,13 @@ void EXTI9_5_IRQHandler()
 	}
 	else if (EXTI->PR & EXTI_PR_PR6)
 	{
-		begin_movement();
 		send_string("START! \n");
+		man_start = 1;
+
 	}
-	EXTI->PR = EXTI_PR_PR9;
-	EXTI->PR = EXTI_PR_PR8;
-	EXTI->PR = EXTI_PR_PR6;
+	EXTI->PR &= ~EXTI_PR_PR9;
+	EXTI->PR &= ~EXTI_PR_PR8;
+	EXTI->PR &= ~EXTI_PR_PR6;
 }
 
 
@@ -233,6 +253,22 @@ int get_direction()
 	{
 		return ANTICLOCKWISE;
 	}
+}
+
+void print_moves()
+{
+	if (current_move == 0)
+	{
+		return;
+	}
+
+	send_string("-------------------\n");
+	for (int i = 0; i < current_move; i++)
+	{
+		sprintf(message, "{%s, %s, %d}\n", axis_names[moves[i].axis], dir_names[moves[i].direction], moves[i].rotation);
+		send_string(message);
+	}
+	send_string("-------------------\n");
 }
 
 // TIM1 PIN PA8 PA9 FI_1
@@ -318,6 +354,8 @@ int main(void)
 
 */
 	     // ENCODER 2 AXIS F1
+	     // PA0 (bialy) do niebieskiego (enkoder)
+	     // PA1 (zolty) do zoltego (enkoder)`
 	     GPIO_InitTypeDef GPIO_InitStruct;
 	     	     __HAL_RCC_TIM2_CLK_ENABLE();
 
@@ -387,18 +425,19 @@ int main(void)
 	    int32_t total = 0;
 	    // 435 800
 	    old_val = TIM2->CNT;
+	    int counter = 0;
 
 	    while(1)
 	    {
-//	    	if (in_move)
-//	    	{
-//	    		if (dir == CLOCKWISE)
-//	    			F1_start_clk();
-//	    		else
-//	    			F1_start_ant();
-//	    	}
-//	    	while (in_move)
-//	    	{
+	    	if (in_move)
+	    	{
+	    		if (dir == CLOCKWISE)
+	    			F1_start_clk();
+	    		else
+	    			F1_start_ant();
+	    	}
+	    	while (in_move)
+	    	{
 		    	int32_t diff = TIM2->CNT - old_val;
 		    	if (diff < 3000 && diff > -3000)
 		    		total += abs_val(diff);
@@ -407,22 +446,35 @@ int main(void)
 		    	send_string(message);
 		    	sprintf(message, "Suma: %d\n", total);
 		    	send_string(message);
-//	    	}
-//	    	if (!in_move)
-//	    	{
-//	    		F1_stop();
-//	    		if (total > 0)
-//	    		{
-//	    			struct move mv;
-//	    			mv.axis = F1;
-//	   	    		mv.direction = dir;
-//	   	    		mv.rotation = total;
-//	   	    		moves[current_move++] = mv;
-//	    		}
-//	    	}
 
-	    	old_val = TIM2->CNT;
+		    	old_val = TIM2->CNT;
 
-	     	HAL_Delay(50);
+		     	HAL_Delay(50);
+	    	}
+	    	if (!in_move)
+	    	{
+	    		F1_stop();
+	    		if (total > 0)
+	    		{
+	    			struct move mv;
+	    			mv.axis = F1;
+	   	    		mv.direction = dir;
+	   	    		mv.rotation = total;
+	   	    		moves[current_move++] = mv;
+	    			total = 0;
+	    		}
+	    	}
+	    	if (man_start)
+	    	{
+	    		begin_movement();
+	    	}
+	    	if (counter > 100)
+	    	{
+		    	print_moves();
+		    	counter = 0;
+	    	}
+
+	    	HAL_Delay(50);
+	    	counter++;
 	    }
 }
