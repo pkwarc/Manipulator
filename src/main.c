@@ -124,11 +124,11 @@ void start_position()
 	send_string(message);
 	if (start_position_distance > 0)
 	{
-		rotate(F1, ANTICLOCKWISE, start_position_distance);
+		rotate(F1, ANTICLOCKWISE, abs_val(start_position_distance));
 	}
 	else
 	{
-		rotate(F1, CLOCKWISE, start_position_distance);
+		rotate(F1, CLOCKWISE, abs_val(start_position_distance));
 	}
 }
 
@@ -138,6 +138,7 @@ void begin_movement()
 	TIM2->CNT = 0;
 	struct move next;
 	start_position();
+	TIM2->CNT = 0;
 	send_string("begin_movement\n");
 	while(1)
 	{
@@ -146,8 +147,10 @@ void begin_movement()
 			next = moves[i];
 			sprintf(message, "Move: %d, rotation = %d", next.rotation);
 			rotate(next.axis, next.direction, next.rotation);
+			TIM2->CNT = 0;
 		}
 		start_position();
+		TIM2->CNT = 0;
 	}
 }
 
