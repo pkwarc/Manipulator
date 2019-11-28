@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    main.c
-  * @author  Ac6
+  * @author  P.K
   * @version V1.0
   * @date    01-December-2013
   * @brief   Default main function.
@@ -55,22 +55,25 @@ char message[50];
 //direction to PA_9 -- step pulse to PA_8
 
 
-struct move {
+typedef struct move {
     int32_t rotation;
     Direction direction;
     Axis axis;
-};
+} Move;
 
 
 struct move moves[MAX_MOVES];
 
 
-unsigned int current_move = 0;
+
 // volatile must be applied because the variable is changed during the interrupt routine
 volatile int in_move = 0;
 volatile Direction dir = CLOCKWISE;
-volatile int man_start = 0;
 
+volatile int start = 0;
+volatile int register_move = 0;
+
+volatile Move current_move;
 
 int32_t abs_val(int32_t a) {
 	if (a < 0) {
@@ -265,13 +268,14 @@ void EXTI15_10_IRQHandler()
 void EXTI0_IRQHandler()
 {
 	send_string("Manipulator movement start..\n");
-	man_start = 1;
+	start = !start;
 	EXTI->PR &= ~EXTI_PR_PR0;
 }
 
 void EXTI1_IRQHandler()
 {
 	send_string("Register movement start..\n");
+	register_move = !register_move;
 	EXTI->PR &= ~EXTI_PR_PR1;
 }
 
@@ -279,6 +283,14 @@ void EXTI2_IRQHandler()
 {
 	send_string("CLOCKWISE! \n");
 	dir = CLOCKWISE;
+	if (in_move)
+	{
+		in_move = 0;
+	}
+	else if (!in_move)
+	{
+		in_move = 1;
+	}
 	EXTI->PR &= ~EXTI_PR_PR2;
 }
 
@@ -286,12 +298,21 @@ void EXTI3_IRQHandler()
 {
 	send_string("ANTICLOCKWISE! \n");
 	dir = ANTICLOCKWISE;
+	if (in_move)
+	{
+		in_move = 0;
+	}
+	else if (!in_move)
+	{
+		in_move = 1;
+	}
 	EXTI->PR &= ~EXTI_PR_PR3;
 }
 
 void EXTI4_IRQHandler()
 {
 	send_string("Axis F1 Button..\n");
+	current_move.axis = F1;
 	EXTI->PR &= ~EXTI_PR_PR4;
 }
 
@@ -299,11 +320,13 @@ void EXTI9_5_IRQHandler()
 {
 	if (EXTI->PR & EXTI_PR_PR5)
 	{
-		send_string("Axis F2 Button..\n")
+		send_string("Axis F2 Button..\n");
+		current_move.axis = F2;
 	}
 	else if (EXTI->PR & EXTI_PR_PR6)
 	{
-		send_string("Axis U Button..\n")
+		send_string("Axis U Button..\n");
+		current_move.axis = U;
 	}
 
 	EXTI->PR &= ~EXTI_PR_PR5;
@@ -406,7 +429,7 @@ int main(void)
 	gpio.Pull = GPIO_NOPULL;
 	gpio.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOB, &gpio);
-		// input internal pull up no external resistors needed.
+		// input axis buttons internal pull up falling.
 	gpio.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6;
 	gpio.Mode = GPIO_MODE_IT_FALLING;
 	gpio.Pull = GPIO_PULLUP;
@@ -416,6 +439,13 @@ int main(void)
 	HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 	HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+	HAL_GPIO_Init(GPIOB, &gpio);
+		// input joy stick internal pull up raising falling
+	gpio.Pin = GPIO_PIN_2 | GPIO_PIN_3;
+	gpio.Mode = GPIO_MODE_IT_RISING_FALLING;
+	gpio.Pull = GPIO_PULLUP;
+	HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+	HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 	HAL_GPIO_Init(GPIOB, &gpio);
 	// GPIO B
 
@@ -445,13 +475,6 @@ int main(void)
 //	HAL_GPIO_Init(GPIOC, &gpio);
 //	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 	// BOARD BUTTON
-
-	gpio.Pin = GPIO_PIN_9 | GPIO_PIN_8 | GPIO_PIN_6;
-	gpio.Mode = GPIO_MODE_IT_RISING;
-	gpio.Pull = GPIO_PULLUP;
-	HAL_GPIO_Init(GPIOC, &gpio);
-	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-
 
 	// AXIS F1 ENCODER
 	// PA0 (bialy) do niebieskiego (enkoder)
@@ -618,7 +641,7 @@ int main(void)
 				total = 0;
 			}
 		}
-		if (man_start)
+		if (start)
 
 		{
 			begin_movement();
