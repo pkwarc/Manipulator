@@ -42,7 +42,13 @@ void start_position();
 void rotate(Axis axis, Direction direction, int32_t value);
 
 TIM_HandleTypeDef timer;
+TIM_HandleTypeDef timer_FI2;
+TIM_HandleTypeDef timer_U;
+
 TIM_Encoder_InitTypeDef encoder;
+TIM_Encoder_InitTypeDef encoder_FI2;
+TIM_Encoder_InitTypeDef encoder_U;
+
 UART_HandleTypeDef uart;
 char message[50];
 
@@ -283,201 +289,219 @@ void print_moves()
 
 int main(void)
 {
-	     SystemCoreClock = 8000000;
-	     HAL_Init();
+	SystemCoreClock = 8000000;
+	HAL_Init();
 
-	     // CLOCK
-		     __HAL_RCC_GPIOB_CLK_ENABLE();
-		     __HAL_RCC_GPIOA_CLK_ENABLE();
-		     __HAL_RCC_GPIOC_CLK_ENABLE();
-		     __HAL_RCC_GPIOD_CLK_ENABLE();
-		     // CLOCK
+	// CLOCK
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOC_CLK_ENABLE();
+	__HAL_RCC_GPIOD_CLK_ENABLE();
+	// CLOCK
 
-	     // GPIO
-	     GPIO_InitTypeDef gpio;
-	     gpio.Pin = GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8
-	    		 | GPIO_PIN_9 | GPIO_PIN_10;
-	     gpio.Mode = GPIO_MODE_OUTPUT_PP;
-	     gpio.Pull = GPIO_NOPULL;
-	     gpio.Speed = GPIO_SPEED_FREQ_LOW;
-	     HAL_GPIO_Init(GPIOA, &gpio);
-	     // GPIO
+	// GPIO
+	GPIO_InitTypeDef gpio;
+	gpio.Pin = GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8
+	    	| GPIO_PIN_9 | GPIO_PIN_10;
+	gpio.Mode = GPIO_MODE_OUTPUT_PP;
+	gpio.Pull = GPIO_NOPULL;
+	gpio.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(GPIOA, &gpio);
+	// GPIO
 
-	     // BOARD BUTTON
-	     gpio.Pin = GPIO_PIN_13;
-	     gpio.Mode = GPIO_MODE_IT_RISING_FALLING;
-	     gpio.Pull = GPIO_PULLUP;
-	     HAL_GPIO_Init(GPIOC, &gpio);
-	     HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+	// BOARD BUTTON
+	gpio.Pin = GPIO_PIN_13;
+	gpio.Mode = GPIO_MODE_IT_RISING_FALLING;
+	gpio.Pull = GPIO_PULLUP;
+	HAL_GPIO_Init(GPIOC, &gpio);
+	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+	// BOARD BUTTON
 
-	     // BOARD BUTTON
-
-	     gpio.Pin = GPIO_PIN_9 | GPIO_PIN_8 | GPIO_PIN_6;
-	     gpio.Mode = GPIO_MODE_IT_RISING;
-	     gpio.Pull = GPIO_PULLUP;
-	     HAL_GPIO_Init(GPIOC, &gpio);
-	     HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-
-	     /*
-	     // ENCODER 1
-	     	     GPIO_InitTypeDef GPIO_InitStruct;
-	     	     __HAL_RCC_TIM1_CLK_ENABLE();
-
-	     	     GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
-	     	     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-	              GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-	     	     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-
-	     	    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-	     	    timer.Instance = TIM1;
-	     	    timer.Init.Period = 0xffff;
-	     	    timer.Init.Prescaler = 0;
-	     	    timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	     	    timer.Init.CounterMode = TIM_COUNTERMODE_UP;
-
-	     	    encoder.EncoderMode = TIM_ENCODERMODE_TI12;
-	     	    encoder.IC1Filter = 0x0f;
-	     	    encoder.IC1Polarity = TIM_INPUTCHANNELPOLARITY_RISING;
-	     	    encoder.IC1Prescaler = TIM_ICPSC_DIV4;
-	     	    encoder.IC1Selection = TIM_ICSELECTION_DIRECTTI;
-
-	     	    encoder.IC2Filter = 0x0f;
-	     	    encoder.IC2Polarity = TIM_INPUTCHANNELPOLARITY_FALLING;
-	     	    encoder.IC2Prescaler = TIM_ICPSC_DIV4;
-	     	    encoder.IC2Selection = TIM_ICSELECTION_DIRECTTI;
-
-	     	    HAL_TIM_Encoder_Init(&timer, &encoder);
-
-	     	    HAL_TIM_Encoder_Start(&timer,TIM_CHANNEL_1);
-
-	     	    TIM1->EGR = 1;           // Generate an update event
-	     	    TIM1->CR1 = 1;           // Enable the counter
-	     	    // ENCODER
-
-*/
-	     // ENCODER 2 AXIS F1
-	     // PA0 (bialy) do niebieskiego (enkoder)
-	     // PA1 (zolty) do zoltego (enkoder)`
-	     GPIO_InitTypeDef GPIO_InitStruct;
-	     	     __HAL_RCC_TIM2_CLK_ENABLE();
-
-	     	     GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
-	     	     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-	             GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-	     	     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-
-	     	    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-	     	    timer.Instance = TIM2;
-	     	    timer.Init.Period = 0xffff;
-	     	    timer.Init.Prescaler = 0;
-	     	    timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	     	    timer.Init.CounterMode = TIM_COUNTERMODE_UP;
-
-	     	    encoder.EncoderMode = TIM_ENCODERMODE_TI12;
-	     	    encoder.IC1Filter = 0x0f;
-	     	    encoder.IC1Polarity = TIM_INPUTCHANNELPOLARITY_RISING;
-	     	    encoder.IC1Prescaler = TIM_ICPSC_DIV4;
-	     	    encoder.IC1Selection = TIM_ICSELECTION_DIRECTTI;
-
-	     	    encoder.IC2Filter = 0x0f;
-	     	    encoder.IC2Polarity = TIM_INPUTCHANNELPOLARITY_FALLING;
-	     	    encoder.IC2Prescaler = TIM_ICPSC_DIV4;
-	     	    encoder.IC2Selection = TIM_ICSELECTION_DIRECTTI;
-
-	     	    HAL_TIM_Encoder_Init(&timer, &encoder);
-
-	     	    HAL_TIM_Encoder_Start(&timer,TIM_CHANNEL_1);
-
-	     	    TIM2->EGR = 1;           // Generate an update event
-	     	    TIM2->CR1 = 1;           // Enable the counter
-	     	    // ENCODER
-
-	    // UART
-	    	__HAL_RCC_USART2_CLK_ENABLE();
-		    gpio.Mode = GPIO_MODE_AF_PP;
-		    gpio.Pin = GPIO_PIN_2;
-		    gpio.Pull = GPIO_NOPULL;
-		    gpio.Speed = GPIO_SPEED_FREQ_LOW;
-		    HAL_GPIO_Init(GPIOA, &gpio);
-
-		    gpio.Mode = GPIO_MODE_AF_INPUT;
-		    gpio.Pin = GPIO_PIN_3;
-		    HAL_GPIO_Init(GPIOA, &gpio);
+	gpio.Pin = GPIO_PIN_9 | GPIO_PIN_8 | GPIO_PIN_6;
+	gpio.Mode = GPIO_MODE_IT_RISING;
+	gpio.Pull = GPIO_PULLUP;
+	HAL_GPIO_Init(GPIOC, &gpio);
+	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
 
-		    uart.Instance = USART2;
-		    uart.Init.BaudRate = 115200;
-		    uart.Init.WordLength = UART_WORDLENGTH_8B;
-		    uart.Init.Parity = UART_PARITY_NONE;
-		    uart.Init.StopBits = UART_STOPBITS_1;
-		    uart.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-		    uart.Init.OverSampling = UART_OVERSAMPLING_16;
-		    uart.Init.Mode = UART_MODE_TX_RX;
-		    HAL_UART_Init(&uart);
-		    // UART
+	// AXIS F1 ENCODER
+	// PA0 (bialy) do niebieskiego (enkoder)
+	// PA1 (zolty) do zoltego (enkoder)`
+	GPIO_InitTypeDef GPIO_InitStruct;
+	__HAL_RCC_TIM2_CLK_ENABLE();
 
+	GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+	timer.Instance = TIM2;
+	timer.Init.Period = 0xffff;
+	timer.Init.Prescaler = 0;
+	timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	timer.Init.CounterMode = TIM_COUNTERMODE_UP;
 
-	    send_string("message\n");
+	encoder.EncoderMode = TIM_ENCODERMODE_TI12;
+	encoder.IC1Filter = 0x0f;
+	encoder.IC1Polarity = TIM_INPUTCHANNELPOLARITY_RISING;
+	encoder.IC1Prescaler = TIM_ICPSC_DIV4;
+	encoder.IC1Selection = TIM_ICSELECTION_DIRECTTI;
+	encoder.IC2Filter = 0x0f;
+	encoder.IC2Polarity = TIM_INPUTCHANNELPOLARITY_FALLING;
+	encoder.IC2Prescaler = TIM_ICPSC_DIV4;
+	encoder.IC2Selection = TIM_ICSELECTION_DIRECTTI;
+	HAL_TIM_Encoder_Init(&timer, &encoder);
+	HAL_TIM_Encoder_Start(&timer,TIM_CHANNEL_1);
+	TIM2->EGR = 1;           // Generate an update event
+	TIM2->CR1 = 1;           // Enable the counter
+	// ENCODER F1
 
+	// AXIS F2 ENCODER
+	// TIM1
+	// PA8 (bialy) do niebieskiego (enkoder)
+	// PA9 (zolty) do zoltego (enkoder)`
+	GPIO_InitTypeDef gpio_timer_FI2;
+	__HAL_RCC_TIM1_CLK_ENABLE();
 
+	gpio_timer_FI2.Pin = GPIO_PIN_8 | GPIO_PIN_9;
+	gpio_timer_FI2.Mode = GPIO_MODE_AF_PP;
+	gpio_timer_FI2.Pull = GPIO_PULLDOWN;
+	gpio_timer_FI2.Speed = GPIO_SPEED_FREQ_HIGH;
+	HAL_GPIO_Init(GPIOA, &gpio_timer_FI2);
 
-	    int32_t old_val = 0;
-	    int32_t total = 0;
-	    // 435 800
-	    old_val = TIM2->CNT;
-	    int counter = 0;
+	timer_FI2.Instance = TIM1;
+	timer_FI2.Init.Period = 0xffff;
+	timer_FI2.Init.Prescaler = 0;
+	timer_FI2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	timer_FI2.Init.CounterMode = TIM_COUNTERMODE_UP;
 
-	    while(1)
-	    {
-	    	if (in_move)
-	    	{
-	    		if (dir == CLOCKWISE)
-	    			F1_start_clk();
-	    		else
-	    			F1_start_ant();
-	    	}
-	    	while (in_move)
-	    	{
-		    	int32_t diff = TIM2->CNT - old_val;
-		    	if (diff < 3000 && diff > -3000)
-		    		total += abs_val(diff);
+	encoder_FI2.EncoderMode = TIM_ENCODERMODE_TI12;
+	encoder_FI2.IC1Filter = 0x0f;
+	encoder_FI2.IC1Polarity = TIM_INPUTCHANNELPOLARITY_RISING;
+	encoder_FI2.IC1Prescaler = TIM_ICPSC_DIV4;
+	encoder_FI2.IC1Selection = TIM_ICSELECTION_DIRECTTI;
+	encoder_FI2.IC2Filter = 0x0f;
+	encoder_FI2.IC2Polarity = TIM_INPUTCHANNELPOLARITY_FALLING;
+	encoder_FI2.IC2Prescaler = TIM_ICPSC_DIV4;
+	encoder_FI2.IC2Selection = TIM_ICSELECTION_DIRECTTI;
+	HAL_TIM_Encoder_Init(timer_FI2, &encoder_FI2);
+	HAL_TIM_Encoder_Start(timer_FI2,TIM_CHANNEL_1);
+	TIM1->EGR = 1;           // Generate an update event
+	TIM1->CR1 = 1;           // Enable the counter
+	// ENCODER F2
 
-		    	sprintf(message, "diff = %d\n", diff);
-		    	send_string(message);
-		    	sprintf(message, "Suma: %d\n", total);
-		    	send_string(message);
+	// AXIS U ENCODER
+	// TIM3
+	// PA6 (bialy) do niebieskiego (enkoder)
+	// PA7 (zolty) do zoltego (enkoder)`
+	GPIO_InitTypeDef gpio_timer_U;
+	__HAL_RCC_TIM3_CLK_ENABLE();
 
-		    	old_val = TIM2->CNT;
+	gpio_timer_U.Pin = GPIO_PIN_6 | GPIO_PIN_7;
+	gpio_timer_U.Mode = GPIO_MODE_AF_PP;
+	gpio_timer_U.Pull = GPIO_PULLDOWN;
+	gpio_timer_U.Speed = GPIO_SPEED_FREQ_HIGH;
+	HAL_GPIO_Init(GPIOA, &gpio_timer_U);
 
-		     	HAL_Delay(50);
-	    	}
-	    	if (!in_move)
-	    	{
-	    		F1_stop();
-	    		if (total > 0)
-	    		{
-	    			struct move mv;
-	    			mv.axis = F1;
-	   	    		mv.direction = dir;
-	   	    		mv.rotation = total;
-	   	    		moves[current_move++] = mv;
-	    			total = 0;
-	    		}
-	    	}
-	    	if (man_start)
-	    	{
-	    		begin_movement();
-	    	}
-	    	if (counter > 100)
-	    	{
-		    	print_moves();
-		    	counter = 0;
-	    	}
+	timer_U.Instance = TIM3;
+	timer_U.Init.Period = 0xffff;
+	timer_U.Init.Prescaler = 0;
+	timer_U.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	timer_U.Init.CounterMode = TIM_COUNTERMODE_UP;
 
-	    	HAL_Delay(50);
-	    	counter++;
-	    }
+	encoder_U.EncoderMode = TIM_ENCODERMODE_TI12;
+	encoder_U.IC1Filter = 0x0f;
+	encoder_U.IC1Polarity = TIM_INPUTCHANNELPOLARITY_RISING;
+	encoder_U.IC1Prescaler = TIM_ICPSC_DIV4;
+	encoder_U.IC1Selection = TIM_ICSELECTION_DIRECTTI;
+	encoder_U.IC2Filter = 0x0f;
+	encoder_U.IC2Polarity = TIM_INPUTCHANNELPOLARITY_FALLING;
+	encoder_U.IC2Prescaler = TIM_ICPSC_DIV4;
+	encoder_U.IC2Selection = TIM_ICSELECTION_DIRECTTI;
+	HAL_TIM_Encoder_Init(timer_U, &encoder_U);
+	HAL_TIM_Encoder_Start(timer_U,TIM_CHANNEL_1);
+	TIM3->EGR = 1;           // Generate an update event
+	TIM3->CR1 = 1;           // Enable the counter
+	// ENCODER U
+
+	// UART
+	__HAL_RCC_USART2_CLK_ENABLE();
+	gpio.Mode = GPIO_MODE_AF_PP;
+	gpio.Pin = GPIO_PIN_2;
+	gpio.Pull = GPIO_NOPULL;
+	gpio.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(GPIOA, &gpio);
+	gpio.Mode = GPIO_MODE_AF_INPUT;
+	gpio.Pin = GPIO_PIN_3;
+	HAL_GPIO_Init(GPIOA, &gpio);
+
+	uart.Instance = USART2;
+	uart.Init.BaudRate = 115200;
+	uart.Init.WordLength = UART_WORDLENGTH_8B;
+	uart.Init.Parity = UART_PARITY_NONE;
+	uart.Init.StopBits = UART_STOPBITS_1;
+	uart.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	uart.Init.OverSampling = UART_OVERSAMPLING_16;
+	uart.Init.Mode = UART_MODE_TX_RX;
+	HAL_UART_Init(&uart);
+	// UART
+
+	send_string("Program is starting...\n");
+
+	int32_t old_val = 0;
+	int32_t total = 0;
+	// 435 800
+	old_val = TIM2->CNT;
+	int counter = 0;
+
+	while(1)
+	{
+		if (in_move)
+		{
+			if (dir == CLOCKWISE)
+				F1_start_clk();
+			else
+				F1_start_ant();
+		}
+		while (in_move)
+		{
+			int32_t diff = TIM2->CNT - old_val;
+			if (diff < 3000 && diff > -3000)
+				total += abs_val(diff);
+
+			sprintf(message, "diff = %d\n", diff);
+			send_string(message);
+			sprintf(message, "Sum: %d\n", total);
+			send_string(message);
+			old_val = TIM2->CNT;
+			HAL_Delay(50);
+		}
+		if (!in_move)
+		{
+			if (total > 0)
+			{
+				struct move mv;
+				mv.axis = F1;
+				mv.direction = dir;
+				mv.rotation = total;
+				moves[current_move++] = mv;
+				total = 0;
+			}
+		}
+		if (man_start)
+
+		{
+			begin_movement();
+		}
+
+		if (counter > 100)
+
+		{
+			print_moves();
+			counter = 0;
+		}
+		HAL_Delay(50);
+		counter++;
+	}
 }
