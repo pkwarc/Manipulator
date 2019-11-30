@@ -16,9 +16,6 @@
 
 
 #define MAX_MOVES 1000
-#define JOYSTICK_STATE_1 HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)
-#define JOYSTICK_STATE_2 HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)
-
 
 typedef enum {
 	F1,
@@ -36,10 +33,11 @@ typedef enum {
 	STOP
 } Direction;
 
-
-void begin_movement();
-void start_position();
-void rotate(Axis axis, Direction direction, int32_t value);
+typedef struct move {
+    int32_t rotation;
+    Direction direction;
+    Axis axis;
+} Move;
 
 TIM_HandleTypeDef timer;
 TIM_HandleTypeDef timer_FI2;
@@ -54,25 +52,25 @@ char message[50];
 
 //direction to PA_9 -- step pulse to PA_8
 
-
-typedef struct move {
-    int32_t rotation;
-    Direction direction;
-    Axis axis;
-} Move;
-
-
 struct move moves[MAX_MOVES];
 
+void begin_movement();
+void start_position();
+void rotate(Move m);
+void start_axis(Move move);
+void stop_axis(Move move);
+int get_axis_rotation(Axis axis);
+void set_axis_rotation(Axis axis, int value);
 
 
 // volatile must be applied because the variable is changed during the interrupt routine
 volatile int in_move = 0;
-volatile Direction dir = CLOCKWISE;
+
 
 volatile int start = 0;
 volatile int register_move = 0;
 
+volatile int move_index = 0;
 volatile Move current_move;
 
 int32_t abs_val(int32_t a) {
@@ -160,92 +158,235 @@ void U_stop() {
 
 void start_position()
 {
-	int32_t start_position_distance = 0;
+	Move f1 = {0};
+	Move f2 = {0};
+	Move u = {0};
 
-	for (int i = 0; i < current_move; i++)
+	f1.axis = F1;
+	f2.axis = F2;
+	u.axis = U;
+
+	for (int i = 0; i < move_index; i++)
 	{
-		if (moves[i].direction == CLOCKWISE)
+		if (moves[i].axis == F1)
 		{
-			start_position_distance += moves[i].rotation;
+			if (moves[i].direction == CLOCKWISE)
+			{
+				f1.rotation += moves[i].rotation;
+			}
+			else
+			{
+				f1.rotation -= moves[i].rotation;
+			}
 		}
-		else
+		else if (moves[i].axis == F2)
 		{
-			start_position_distance -= moves[i].rotation;
+			if (moves[i].direction == CLOCKWISE)
+			{
+				f2.rotation += moves[i].rotation;
+			}
+			else
+			{
+				f2.rotation -= moves[i].rotation;
+			}
+		}
+		else if (moves[i].axis == U)
+		{
+			if (moves[i].direction == CLOCKWISE)
+			{
+				u.rotation += moves[i].rotation;
+			}
+			else
+			{
+				u.rotation -= moves[i].rotation;
+			}
 		}
 	}
-	// if start_position_distance is positive then clockwise otherwise anti
-	sprintf(message, "start position distance: %d\n", start_position_distance);
-	send_string(message);
-	if (start_position_distance > 0)
+
+	if (u.rotation > 0)
 	{
-		rotate(F1, ANTICLOCKWISE, abs_val(start_position_distance));
+		u.direction = ANTICLOCKWISE;
+		u.rotation = abs_val(u.rotation);
 	}
 	else
 	{
-		rotate(F1, CLOCKWISE, abs_val(start_position_distance));
+		u.direction = CLOCKWISE;
+		u.rotation = abs_val(u.rotation);
 	}
+
+	if (f1.rotation > 0)
+	{
+		f1.direction = ANTICLOCKWISE;
+		f1.rotation = abs_val(f1.rotation);
+	}
+	else
+	{
+		f1.direction = CLOCKWISE;
+		f1.rotation = abs_val(f1.rotation);
+	}
+
+	if (f2.rotation > 0)
+	{
+		f2.direction = ANTICLOCKWISE;
+		f2.rotation = abs_val(f2.rotation);
+	}
+	else
+	{
+		f2.direction = CLOCKWISE;
+		f2.rotation = abs_val(f2.rotation);
+	}
+	// if start_position_distance is positive then clockwise otherwise anti
+
+	rotate(f1);
+	rotate(f2);
+	rotate(u);
 }
 
 
 void begin_movement()
 {
-	TIM2->CNT = 0;
+	set_axis_rotation(F1, 0);
+	set_axis_rotation(F2, 0);
+	set_axis_rotation(U, 0);
+
 	struct move next;
 	start_position();
-	TIM2->CNT = 0;
+
+	set_axis_rotation(F1, 0);
+	set_axis_rotation(F2, 0);
+	set_axis_rotation(U, 0);
+
 	send_string("begin_movement\n");
 	while(1)
 	{
-		for (int i = 0; i < current_move; i++)
+		for (int i = 0; i < move_index; i++)
 		{
 			next = moves[i];
 			sprintf(message, "Move: %d, rotation = %d", next.rotation);
-			rotate(next.axis, next.direction, next.rotation);
-			TIM2->CNT = 0;
+			rotate(next);
+			set_axis_rotation(next.axis, 0); // err
 		}
 		start_position();
-		TIM2->CNT = 0;
+		set_axis_rotation(F1, 0);
+		set_axis_rotation(F2, 0);
+		set_axis_rotation(U, 0);
 	}
 }
 
 
 
 
-void rotate(Axis ax, Direction dir, int32_t value)
+void rotate(Move m)
 {
     int32_t old_val = 0;
     int32_t total = 0;
     // 435 800
-    old_val = TIM2->CNT;
+    old_val = get_axis_rotation(m.axis);
 
 
-	if (ax == F1)
+	start_axis(m);
+	while (total < m.rotation)
 	{
-		if (dir == CLOCKWISE)
+		int32_t diff = get_axis_rotation(m.axis) - old_val;
+		if (diff < 3000 && diff > -3000)
+			total += abs_val(diff);
+
+		sprintf(message, "diff = %d\n", diff);
+		send_string(message);
+		sprintf(message, "Suma: %d\n", total);
+		send_string(message);
+		old_val = get_axis_rotation(m.axis);
+
+		sprintf(message, "Zostalo: %d\n", m.rotation - total);
+		send_string(message);
+		HAL_Delay(50);
+	}
+    stop_axis(m);
+}
+
+void start_axis(Move move)
+{
+	if (move.axis == F1)
+	{
+		if (move.direction == CLOCKWISE)
 		{
-	    	F1_start_clk();
+			F1_start_clk();
 		}
 		else
 		{
 			F1_start_ant();
 		}
-		while (total < value)
+	}
+	else if (move.axis == F2)
+	{
+		if (move.direction == CLOCKWISE)
 		{
-			int32_t diff = TIM2->CNT - old_val;
-			if (diff < 3000 && diff > -3000)
-				total += abs_val(diff);
+			F2_start_clk();
+		}
+		else
+		{
+			F2_start_ant();
+		}
+	}
+	else if (move.axis == U)
+	{
+		if (move.direction == CLOCKWISE)
+		{
+			U_start_clk();
+		}
+		else
+		{
+			U_start_ant();
+		}
+	}
+}
 
-			sprintf(message, "diff = %d\n", diff);
-			send_string(message);
-			sprintf(message, "Suma: %d\n", total);
-			send_string(message);
-			old_val = TIM2->CNT;
+void stop_axis(Move move)
+{
+	if (move.axis == F1)
+	{
+		F1_stop();
+	}
+	else if (move.axis == F2)
+	{
+		F2_stop();
+	}
+	else if (move.axis == U)
+	{
+		U_stop();
+	}
+}
 
-			sprintf(message, "Zostalo: %d\n", value - total);
-			send_string(message);
-			HAL_Delay(50);
-		 }
-    	 F1_stop();
+int get_axis_rotation(Axis axis)
+{
+	if (axis == F1)
+	{
+		return TIM2->CNT;
+	}
+	else if (axis == F2)
+	{
+		return TIM1->CNT;
+	}
+	else if (axis == U)
+	{
+		return TIM3->CNT;
+	}
+	return 0;
+}
+
+void set_axis_rotation(Axis axis, int value)
+{
+	if (axis == F1)
+	{
+		TIM2->CNT = value;
+	}
+	else if (axis == F2)
+	{
+		TIM1->CNT = value;
+	}
+	else if (axis == U)
+	{
+		TIM3->CNT = value;
 	}
 }
 
@@ -282,7 +423,7 @@ void EXTI1_IRQHandler()
 void EXTI2_IRQHandler()
 {
 	send_string("CLOCKWISE! \n");
-	dir = CLOCKWISE;
+	current_move.direction = CLOCKWISE;
 	if (in_move)
 	{
 		in_move = 0;
@@ -297,7 +438,7 @@ void EXTI2_IRQHandler()
 void EXTI3_IRQHandler()
 {
 	send_string("ANTICLOCKWISE! \n");
-	dir = ANTICLOCKWISE;
+	current_move.direction = ANTICLOCKWISE;
 	if (in_move)
 	{
 		in_move = 0;
@@ -340,31 +481,15 @@ void TIM2_IRQHandler()
 	TIM2->SR &= ~TIM_SR_UIF;
 }
 
-int get_direction()
-{
-	if (!JOYSTICK_STATE_1 && !JOYSTICK_STATE_2)
-	{
-		return STOP;
-	}
-	if (JOYSTICK_STATE_1)
-	{
-		return CLOCKWISE;
-	}
-	if (JOYSTICK_STATE_2)
-	{
-		return ANTICLOCKWISE;
-	}
-}
-
 void print_moves()
 {
-	if (current_move == 0)
+	if (move_index== 0)
 	{
 		return;
 	}
 
 	send_string("-------------------\n");
-	for (int i = 0; i < current_move; i++)
+	for (int i = 0; i < move_index; i++)
 	{
 		sprintf(message, "{%s, %s, %d}\n", axis_names[moves[i].axis], dir_names[moves[i].direction], moves[i].rotation);
 		send_string(message);
@@ -537,8 +662,8 @@ int main(void)
 	encoder_FI2.IC2Polarity = TIM_INPUTCHANNELPOLARITY_FALLING;
 	encoder_FI2.IC2Prescaler = TIM_ICPSC_DIV4;
 	encoder_FI2.IC2Selection = TIM_ICSELECTION_DIRECTTI;
-	HAL_TIM_Encoder_Init(timer_FI2, &encoder_FI2);
-	HAL_TIM_Encoder_Start(timer_FI2,TIM_CHANNEL_1);
+	HAL_TIM_Encoder_Init(&timer_FI2, &encoder_FI2);
+	HAL_TIM_Encoder_Start(&timer_FI2,TIM_CHANNEL_1);
 	TIM1->EGR = 1;           // Generate an update event
 	TIM1->CR1 = 1;           // Enable the counter
 	// ENCODER F2
@@ -571,8 +696,8 @@ int main(void)
 	encoder_U.IC2Polarity = TIM_INPUTCHANNELPOLARITY_FALLING;
 	encoder_U.IC2Prescaler = TIM_ICPSC_DIV4;
 	encoder_U.IC2Selection = TIM_ICSELECTION_DIRECTTI;
-	HAL_TIM_Encoder_Init(timer_U, &encoder_U);
-	HAL_TIM_Encoder_Start(timer_U,TIM_CHANNEL_1);
+	HAL_TIM_Encoder_Init(&timer_U, &encoder_U);
+	HAL_TIM_Encoder_Start(&timer_U,TIM_CHANNEL_1);
 	TIM3->EGR = 1;           // Generate an update event
 	TIM3->CR1 = 1;           // Enable the counter
 	// ENCODER U
@@ -604,21 +729,18 @@ int main(void)
 	int32_t old_val = 0;
 	int32_t total = 0;
 	// 435 800
-	old_val = TIM2->CNT;
+	old_val = 0;
 	int counter = 0;
 
 	while(1)
 	{
 		if (in_move)
 		{
-			if (dir == CLOCKWISE)
-				F1_start_clk();
-			else
-				F1_start_ant();
+			start_axis(current_move);
 		}
 		while (in_move)
 		{
-			int32_t diff = TIM2->CNT - old_val;
+			int32_t diff = get_axis_rotation(current_move.axis) - old_val;
 			if (diff < 3000 && diff > -3000)
 				total += abs_val(diff);
 
@@ -626,18 +748,15 @@ int main(void)
 			send_string(message);
 			sprintf(message, "Sum: %d\n", total);
 			send_string(message);
-			old_val = TIM2->CNT;
+			old_val = get_axis_rotation(current_move.axis);
 			HAL_Delay(50);
 		}
 		if (!in_move)
 		{
 			if (total > 0)
 			{
-				struct move mv;
-				mv.axis = F1;
-				mv.direction = dir;
-				mv.rotation = total;
-				moves[current_move++] = mv;
+				current_move.rotation = total;
+				moves[move_index++] = current_move;
 				total = 0;
 			}
 		}
