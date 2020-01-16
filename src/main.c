@@ -14,7 +14,8 @@
 #include <stdlib.h>
 
 
-
+#define FALSE 0
+#define TRUE 1
 #define MAX_MOVES 1000
 
 typedef enum {
@@ -61,19 +62,22 @@ void start_axis(Move move);
 void stop_axis(Move move);
 int get_axis_rotation(Axis axis);
 void set_axis_rotation(Axis axis, int value);
+void manipulator_config();
 
 
 // volatile must be applied because the variable is changed during the interrupt routine
-volatile int in_move = 0;
+volatile int in_move = FALSE;
 
 
-volatile int start = 0;
-volatile int register_move = 0;
+volatile int start_move = FALSE;
+volatile int register_move = FALSE;
+volatile int was_test_performed = FALSE;
 
 volatile int move_index = 0;
 volatile Move current_move;
 
-int32_t abs_val(int32_t a) {
+int32_t abs_val(int32_t a)
+{
 	if (a < 0) {
 		return -a;
 	}
@@ -83,7 +87,7 @@ int32_t abs_val(int32_t a) {
 
 void send_string(char* s)
 {
- HAL_UART_Transmit(&uart, (uint8_t*)s, strlen(s), 1000);
+	HAL_UART_Transmit(&uart, (uint8_t*)s, strlen(s), 1000);
 }
 
 
@@ -95,9 +99,9 @@ void F1_start_clk() {
 
 
 void F1_start_ant() {
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_13, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_14, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
 }
 
 
@@ -118,9 +122,9 @@ void F2_start_clk() {
 
 
 void F2_start_ant() {
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_14, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_15, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
 }
 
 
@@ -129,7 +133,7 @@ void F2_stop() {
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_14, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_15, GPIO_PIN_SET);
 }
 
@@ -141,9 +145,9 @@ void U_start_clk() {
 
 
 void U_start_ant() {
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
 }
 
 
@@ -156,7 +160,7 @@ void U_stop() {
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
 }
 
-void start_position()
+void start_position(int from)
 {
 	Move f1 = {0};
 	Move f2 = {0};
@@ -166,7 +170,7 @@ void start_position()
 	f2.axis = F2;
 	u.axis = U;
 
-	for (int i = 0; i < move_index; i++)
+	for (int i = from; i < move_index; i++)
 	{
 		if (moves[i].axis == F1)
 		{
@@ -245,35 +249,43 @@ void start_position()
 
 void begin_movement()
 {
+	if (move_index == 0) {
+		send_string("Cannot start movement - no data.\n");
+		return;
+	}
 	set_axis_rotation(F1, 0);
 	set_axis_rotation(F2, 0);
 	set_axis_rotation(U, 0);
 
-	struct move next;
-	start_position();
+	start_position(0);
+
+	set_axis_rotation(F1, 0);
+	set_axis_rotation(F2, 0);
+	set_axis_rotation(U, 0);
+
+	rotate(moves[0]);
 
 	set_axis_rotation(F1, 0);
 	set_axis_rotation(F2, 0);
 	set_axis_rotation(U, 0);
 
 	send_string("begin_movement\n");
-	while(1)
+	while (start_move)
 	{
-		for (int i = 0; i < move_index; i++)
+		struct move next;
+		for (int i = 1; i < move_index; i++)
 		{
 			next = moves[i];
 			sprintf(message, "Move: %d, rotation = %d", next.rotation);
 			rotate(next);
 			set_axis_rotation(next.axis, 0); // err
 		}
-		start_position();
+		start_position(1);
 		set_axis_rotation(F1, 0);
 		set_axis_rotation(F2, 0);
 		set_axis_rotation(U, 0);
 	}
 }
-
-
 
 
 void rotate(Move m)
@@ -303,6 +315,7 @@ void rotate(Move m)
 	}
     stop_axis(m);
 }
+
 
 void start_axis(Move move)
 {
@@ -341,6 +354,7 @@ void start_axis(Move move)
 	}
 }
 
+
 void stop_axis(Move move)
 {
 	if (move.axis == F1)
@@ -356,6 +370,7 @@ void stop_axis(Move move)
 		U_stop();
 	}
 }
+
 
 int get_axis_rotation(Axis axis)
 {
@@ -374,6 +389,7 @@ int get_axis_rotation(Axis axis)
 	return 0;
 }
 
+
 void set_axis_rotation(Axis axis, int value)
 {
 	if (axis == F1)
@@ -391,87 +407,74 @@ void set_axis_rotation(Axis axis, int value)
 }
 
 
-void EXTI15_10_IRQHandler()
+// BUTTON S PB0
+// BUTTON T PB1
+// JOYSTICK FORWARD PB2
+// JOYSTICK BACKWARD PC3
+// AXIS F1 BUTTON PB4
+// AXIS F2 BUTTON PB5
+// AXIS U BUTTON PB6
+void HAL_SYSTICK_Callback(void)
 {
-	if (in_move)
+	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0) == GPIO_PIN_RESET)
 	{
-		in_move = 0;
+		send_string("S1 ON\n");
+		send_string("Register movement start..\n");
+
+		move_index = 0;
+
+		register_move = !register_move;
+		send_string(register_move ? "TRUE\n" : "FALSE\n");
 	}
-	else if (!in_move)
+	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1) == GPIO_PIN_RESET)
 	{
-		in_move = 1;
+		send_string("S2 ON\n");
+		send_string("Manipulator movement start..\n");
+		start_move = !start_move;
+		send_string(start_move ? "TRUE\n" : "FALSE\n");
 	}
-
-	send_string("Interrupt! \n");
-	EXTI->PR = EXTI_PR_PR13;
-}
-
-void EXTI0_IRQHandler()
-{
-	send_string("Manipulator movement start..\n");
-	start = !start;
-	EXTI->PR &= ~EXTI_PR_PR0;
-}
-
-void EXTI1_IRQHandler()
-{
-	send_string("Register movement start..\n");
-	register_move = !register_move;
-	EXTI->PR &= ~EXTI_PR_PR1;
-}
-
-void EXTI2_IRQHandler()
-{
-	send_string("CLOCKWISE! \n");
-	current_move.direction = CLOCKWISE;
-	if (in_move)
+	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2) == GPIO_PIN_RESET)
 	{
-		in_move = 0;
+		send_string("JOYSTICK FORWARD ON\n");
+		send_string("CLOCKWISE! START\n");
+
+		current_move.direction = CLOCKWISE;
+		in_move = TRUE;
 	}
-	else if (!in_move)
+	if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_3) == GPIO_PIN_RESET)
 	{
-		in_move = 1;
-	}
-	EXTI->PR &= ~EXTI_PR_PR2;
-}
+		send_string("JOYSTICK BACKWARD ON\n");
+		send_string("ANTICLOCKWISE! START\n");
 
-void EXTI3_IRQHandler()
-{
-	send_string("ANTICLOCKWISE! \n");
-	current_move.direction = ANTICLOCKWISE;
-	if (in_move)
-	{
-		in_move = 0;
+		current_move.direction = ANTICLOCKWISE;
+		in_move = TRUE;
 	}
-	else if (!in_move)
+	if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_3) == GPIO_PIN_SET && HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_2) == GPIO_PIN_SET)
 	{
-		in_move = 1;
+		send_string("JOYSTICK MIDDLE POSITION\n");
+		send_string("STPOP MOVE \n");
+
+		was_test_performed = FALSE;
+		in_move = FALSE;
 	}
-	EXTI->PR &= ~EXTI_PR_PR3;
-}
-
-void EXTI4_IRQHandler()
-{
-	send_string("Axis F1 Button..\n");
-	current_move.axis = F1;
-	EXTI->PR &= ~EXTI_PR_PR4;
-}
-
-void EXTI9_5_IRQHandler()
-{
-	if (EXTI->PR & EXTI_PR_PR5)
+	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_4) == GPIO_PIN_RESET)
 	{
-		send_string("Axis F2 Button..\n");
+		send_string("AXIS F1 ON\n");
+
+		current_move.axis = F1;
+	}
+	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5) == GPIO_PIN_RESET)
+	{
+		send_string("AXIS F2 ON\n");
+
 		current_move.axis = F2;
 	}
-	else if (EXTI->PR & EXTI_PR_PR6)
+	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == GPIO_PIN_RESET)
 	{
-		send_string("Axis U Button..\n");
+		send_string("AXIS U ON\n");
+
 		current_move.axis = U;
 	}
-
-	EXTI->PR &= ~EXTI_PR_PR5;
-	EXTI->PR &= ~EXTI_PR_PR6;
 }
 
 
@@ -509,7 +512,7 @@ void print_moves()
 // BUTTON S PB0
 // BUTTON T PB1
 // JOYSTICK FORWARD PB2
-// JOYSTICK BACKWARD PB3
+// JOYSTICK BACKWARD PC3
 // AXIS F1 BUTTON PB4
 // AXIS F2 BUTTON PB5
 // AXIS U BUTTON PB6
@@ -517,14 +520,107 @@ void print_moves()
 // DIOD F2 AXIS PC1
 // DIOD U AXIS PC2
 
-// Possible states for S and T buttons:
-// S | T
+// Possible states for S1 (start_move flag) and S2 (stop_move flag) buttons:
+// S | S2
 // 0 | 0 Manipulator off
 // 1 | 0 Manipulator movement
-// 1 | 1 For now no action
+// 1 | 1 Manipulator on axis diagnosis
 // 0 | 1 Register movement
 
+/*
+ * S
+ */
 int main(void)
+{
+	manipulator_config();
+
+	send_string("Program is starting...\n");
+
+	int32_t old_val = 0;
+	int32_t total = 0;
+	// 435 800
+
+	int counter = 0;
+
+	F1_stop();
+	F2_stop();
+	U_stop();
+
+	while(1)
+	{
+		/* rejestracja ruchu */
+		while (register_move)
+		{
+			if (in_move)
+			{
+				start_axis(current_move);
+			}
+			while (in_move)
+			{
+				int32_t diff = get_axis_rotation(current_move.axis) - old_val;
+				if (diff < 3000 && diff > -3000)
+					total += abs_val(diff);
+
+				sprintf(message, "diff = %d\n", diff);
+				send_string(message);
+				sprintf(message, "Sum: %d\n", total);
+				send_string(message);
+				old_val = get_axis_rotation(current_move.axis);
+				HAL_Delay(50);
+			}
+			if (!in_move)
+			{
+				if (total > 0)
+				{
+					current_move.rotation = total;
+					moves[move_index++] = current_move;
+					total = 0;
+				}
+			}
+			if (counter > 100)
+
+			{
+				print_moves();
+				counter = 0;
+			}
+			HAL_Delay(50);
+			counter++;
+		}
+
+		/* odtwarzanie ruchu */
+		while (start_move)
+		{
+			begin_movement();
+		}
+
+		/* ruch testowy */
+		while (start_move && register_move && was_test_performed)
+		{
+			was_test_performed = TRUE;
+
+			Move f1_move;
+			Move f2_move;
+			Move u_move;
+
+			f1_move.direction = f2_move.direction = u_move.direction = CLOCKWISE;
+			f1_move.rotation = f2_move.rotation = u_move.rotation = 500;
+			f2_move.axis = F2;
+			u_move.axis = U;
+			f1_move.axis = F1;
+
+			rotate(f1_move);
+			rotate(f2_move);
+			rotate(u_move);
+
+			f1_move.direction = f2_move.direction = u_move.direction = ANTICLOCKWISE;
+			rotate(f1_move);
+			rotate(f2_move);
+			rotate(u_move);
+		}
+	}
+}
+
+void manipulator_config()
 {
 	SystemCoreClock = 8000000;
 	HAL_Init();
@@ -536,47 +632,79 @@ int main(void)
 	__HAL_RCC_GPIOD_CLK_ENABLE();
 	// CLOCK
 
+	// Enable PA13 PA14
+	 __HAL_RCC_AFIO_CLK_ENABLE();
+	__HAL_AFIO_REMAP_SWJ_DISABLE();
+
+	SysTick_Config(400000);
+
 	GPIO_InitTypeDef gpio;
 
+	GPIO_InitTypeDef gpio_a;
+
 	// GPIO A
-	gpio.Pin = GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14
+	gpio_a.Pin = GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14
 	    	| GPIO_PIN_15;
-	gpio.Mode = GPIO_MODE_OUTPUT_PP;
-	gpio.Pull = GPIO_NOPULL;
-	gpio.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOA, &gpio);
+	gpio_a.Mode = GPIO_MODE_OUTPUT_PP;
+	gpio_a.Pull = GPIO_NOPULL;
+	gpio_a.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(GPIOA, &gpio_a);
 	// GPIO A
 
 	// GPIO B
+	// BUTTON S PB0
+	// BUTTON T PB1
+	// JOYSTICK FORWARD PB2
+	// JOYSTICK BACKWARD PC3
+	// AXIS F1 BUTTON PB4
+	// AXIS F2 BUTTON PB5
+	// AXIS U BUTTON PB6
 		// output
-	gpio.Pin = GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
-	gpio.Mode = GPIO_MODE_OUTPUT_PP;
-	gpio.Pull = GPIO_NOPULL;
-	gpio.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOB, &gpio);
+	GPIO_InitTypeDef gpio_b_output;
+	gpio_b_output.Pin = GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
+	gpio_b_output.Mode = GPIO_MODE_OUTPUT_PP;
+	gpio_b_output.Pull = GPIO_NOPULL;
+	gpio_b_output.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(GPIOB, &gpio_b_output);
+
 		// input axis buttons internal pull up falling.
-	gpio.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6;
-	gpio.Mode = GPIO_MODE_IT_FALLING;
-	gpio.Pull = GPIO_PULLUP;
-	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
-	HAL_NVIC_EnableIRQ(EXTI1_IRQn);
-	HAL_NVIC_EnableIRQ(EXTI2_IRQn);
-	HAL_NVIC_EnableIRQ(EXTI3_IRQn);
-	HAL_NVIC_EnableIRQ(EXTI4_IRQn);
-	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-	HAL_GPIO_Init(GPIOB, &gpio);
-		// input joy stick internal pull up raising falling
-	gpio.Pin = GPIO_PIN_2 | GPIO_PIN_3;
-	gpio.Mode = GPIO_MODE_IT_RISING_FALLING;
-	gpio.Pull = GPIO_PULLUP;
-	HAL_NVIC_EnableIRQ(EXTI2_IRQn);
-	HAL_NVIC_EnableIRQ(EXTI3_IRQn);
-	HAL_GPIO_Init(GPIOB, &gpio);
+	GPIO_InitTypeDef gpio_axis_buttons;
+	gpio_axis_buttons.Pin = GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6;
+	gpio_axis_buttons.Mode = GPIO_MODE_INPUT;
+	gpio_axis_buttons.Pull = GPIO_PULLUP;
+	HAL_GPIO_Init(GPIOB, &gpio_axis_buttons);
+
+	GPIO_InitTypeDef gpio_s1s2;
+	gpio_s1s2.Pin = GPIO_PIN_0 | GPIO_PIN_1;
+	gpio_s1s2.Mode = GPIO_MODE_INPUT;
+	gpio_s1s2.Pull = GPIO_PULLUP;
+	HAL_GPIO_Init(GPIOB, &gpio_s1s2);
+
+	//input joy stick internal pull up raising falling, PB3 doesn't work
+	GPIO_InitTypeDef gpio_joystick_c;
+	gpio_joystick_c.Pin = GPIO_PIN_3;
+	gpio_joystick_c.Mode = GPIO_MODE_INPUT;
+	gpio_joystick_c.Pull = GPIO_PULLUP;
+	HAL_GPIO_Init(GPIOC, &gpio_joystick_c);
+	
+	//input joy stick internal pull up raising falling
+	GPIO_InitTypeDef gpio_joystick;
+	gpio_joystick.Pin = GPIO_PIN_2;
+	gpio_joystick.Mode = GPIO_MODE_INPUT;
+	gpio_joystick.Pull = GPIO_PULLUP;
+	HAL_GPIO_Init(GPIOB, &gpio_joystick);
+
+//	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+//	HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+//	HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+//	HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+//	HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+//	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 	// GPIO B
 
 
 	// GPIO C
-	gpio.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14
+	gpio.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_4 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14
 	    	| GPIO_PIN_15;
 	gpio.Mode = GPIO_MODE_OUTPUT_PP;
 	gpio.Pull = GPIO_NOPULL;
@@ -723,56 +851,4 @@ int main(void)
 	uart.Init.Mode = UART_MODE_TX_RX;
 	HAL_UART_Init(&uart);
 	// UART
-
-	send_string("Program is starting...\n");
-
-	int32_t old_val = 0;
-	int32_t total = 0;
-	// 435 800
-	old_val = 0;
-	int counter = 0;
-
-	while(1)
-	{
-		if (in_move)
-		{
-			start_axis(current_move);
-		}
-		while (in_move)
-		{
-			int32_t diff = get_axis_rotation(current_move.axis) - old_val;
-			if (diff < 3000 && diff > -3000)
-				total += abs_val(diff);
-
-			sprintf(message, "diff = %d\n", diff);
-			send_string(message);
-			sprintf(message, "Sum: %d\n", total);
-			send_string(message);
-			old_val = get_axis_rotation(current_move.axis);
-			HAL_Delay(50);
-		}
-		if (!in_move)
-		{
-			if (total > 0)
-			{
-				current_move.rotation = total;
-				moves[move_index++] = current_move;
-				total = 0;
-			}
-		}
-		if (start)
-
-		{
-			begin_movement();
-		}
-
-		if (counter > 100)
-
-		{
-			print_moves();
-			counter = 0;
-		}
-		HAL_Delay(50);
-		counter++;
-	}
 }
