@@ -1206,15 +1206,15 @@ void TIM_CCxChannelCmd(TIM_TypeDef* TIMx, uint32_t Channel, uint32_t ChannelStat
   * @retval None
   */
 #define __HAL_TIM_DISABLE(__HANDLE__) \
-                        do { \
-                          if (((__HANDLE__)->Instance->CCER & TIM_CCER_CCxE_MASK) == 0U) \
-                            { \
-                            if(((__HANDLE__)->Instance->CCER & TIM_CCER_CCxNE_MASK) == 0U) \
-                            { \
-                              (__HANDLE__)->Instance->CR1 &= ~(TIM_CR1_CEN); \
-                            } \
-                          } \
-                        } while(0U)
+        do { \
+          if (((__HANDLE__)->Instance->CCER & TIM_CCER_CCxE_MASK) == 0U) \
+            { \
+            if(((__HANDLE__)->Instance->CCER & TIM_CCER_CCxNE_MASK) == 0U) \
+            { \
+              (__HANDLE__)->Instance->CR1 &= ~(TIM_CR1_CEN); \
+            } \
+          } \
+        } while(0U)
 /* The Main Output Enable of a timer instance is disabled only if all the CCx and CCxN
    channels have been disabled */
 /**

@@ -356,7 +356,7 @@ HAL_StatusTypeDef HAL_TIM_Base_Start_IT(TIM_HandleTypeDef *htim)
    __HAL_TIM_ENABLE_IT(htim, TIM_IT_UPDATE);
 
    /* Enable the Peripheral */
-  __HAL_TIM_ENABLE(htim);
+
 
   /* Return function status */
   return HAL_OK;

@@ -90,10 +90,12 @@ Common symbol       size              file
 
 __lock___atexit_recursive_mutex
                     0x1               /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
+debounceTimer       0x40              src/main.o
 __lock___arc4random_mutex
                     0x1               /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
 timer               0x40              src/main.o
 errno               0x4               /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-reent.o)
+current_move        0x8               src/main.o
 moves               0x1f40            src/main.o
 encoder             0x24              src/main.o
 uwTick              0x4               HAL_Driver/Src/stm32f1xx_hal.o
@@ -105,6 +107,10 @@ __lock___sinit_recursive_mutex
 message             0x32              src/main.o
 __lock___malloc_recursive_mutex
                     0x1               /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
+encoder_FI2         0x24              src/main.o
+encoder_U           0x24              src/main.o
+timer_FI2           0x40              src/main.o
+timer_U             0x40              src/main.o
 __lock___at_quick_exit_mutex
                     0x1               /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
 uart                0x40              src/main.o
@@ -2282,8 +2288,6 @@ Discarded input sections
  .bss           0x0000000000000000        0x0 HAL_Driver/Src/stm32f1xx_hal_gpio.o
  .text.HAL_GPIO_DeInit
                 0x0000000000000000      0x184 HAL_Driver/Src/stm32f1xx_hal_gpio.o
- .text.HAL_GPIO_ReadPin
-                0x0000000000000000       0x2e HAL_Driver/Src/stm32f1xx_hal_gpio.o
  .text.HAL_GPIO_TogglePin
                 0x0000000000000000       0x22 HAL_Driver/Src/stm32f1xx_hal_gpio.o
  .text.HAL_GPIO_LockPin
@@ -6786,20 +6790,10 @@ Discarded input sections
  .text          0x0000000000000000        0x0 HAL_Driver/Src/stm32f1xx_hal_tim.o
  .data          0x0000000000000000        0x0 HAL_Driver/Src/stm32f1xx_hal_tim.o
  .bss           0x0000000000000000        0x0 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .text.HAL_TIM_Base_Init
-                0x0000000000000000       0x56 HAL_Driver/Src/stm32f1xx_hal_tim.o
  .text.HAL_TIM_Base_DeInit
                 0x0000000000000000       0x60 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .text.HAL_TIM_Base_MspInit
-                0x0000000000000000       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
  .text.HAL_TIM_Base_MspDeInit
                 0x0000000000000000       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .text.HAL_TIM_Base_Start
-                0x0000000000000000       0x34 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .text.HAL_TIM_Base_Stop
-                0x0000000000000000       0x54 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .text.HAL_TIM_Base_Start_IT
-                0x0000000000000000       0x34 HAL_Driver/Src/stm32f1xx_hal_tim.o
  .text.HAL_TIM_Base_Stop_IT
                 0x0000000000000000       0x54 HAL_Driver/Src/stm32f1xx_hal_tim.o
  .text.HAL_TIM_Base_Start_DMA
@@ -6896,8 +6890,6 @@ Discarded input sections
                 0x0000000000000000      0x1a8 HAL_Driver/Src/stm32f1xx_hal_tim.o
  .text.HAL_TIM_Encoder_Stop_DMA
                 0x0000000000000000       0xd4 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .text.HAL_TIM_IRQHandler
-                0x0000000000000000      0x210 HAL_Driver/Src/stm32f1xx_hal_tim.o
  .text.HAL_TIM_OC_ConfigChannel
                 0x0000000000000000       0xc0 HAL_Driver/Src/stm32f1xx_hal_tim.o
  .text.HAL_TIM_IC_ConfigChannel
@@ -6929,14 +6921,6 @@ Discarded input sections
  .text.HAL_TIM_ReadCapturedValue
                 0x0000000000000000       0xa4 HAL_Driver/Src/stm32f1xx_hal_tim.o
  .text.HAL_TIM_PeriodElapsedCallback
-                0x0000000000000000       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .text.HAL_TIM_OC_DelayElapsedCallback
-                0x0000000000000000       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .text.HAL_TIM_IC_CaptureCallback
-                0x0000000000000000       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .text.HAL_TIM_PWM_PulseFinishedCallback
-                0x0000000000000000       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .text.HAL_TIM_TriggerCallback
                 0x0000000000000000       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
  .text.HAL_TIM_ErrorCallback
                 0x0000000000000000       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
@@ -7199,22 +7183,12 @@ Discarded input sections
                 0x0000000000000000       0xb0 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
  .text.HAL_TIMEx_MasterConfigSynchronization
                 0x0000000000000000       0x88 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
- .text.HAL_TIMEx_CommutationCallback
-                0x0000000000000000       0x12 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
- .text.HAL_TIMEx_BreakCallback
-                0x0000000000000000       0x12 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
  .text.TIMEx_DMACommutationCplt
                 0x0000000000000000       0x24 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
  .text.HAL_TIMEx_HallSensor_GetState
                 0x0000000000000000       0x1a HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
  .text.TIM_CCxNChannelCmd
                 0x0000000000000000       0x44 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
- .debug_info    0x0000000000000000     0x17d5 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
- .debug_abbrev  0x0000000000000000      0x2c7 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
- .debug_aranges
-                0x0000000000000000      0x138 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
- .debug_ranges  0x0000000000000000      0x128 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
- .debug_macro   0x0000000000000000      0x402 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
  .debug_macro   0x0000000000000000      0xa72 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
  .debug_macro   0x0000000000000000      0x224 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
  .debug_macro   0x0000000000000000       0x28 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
@@ -7288,12 +7262,6 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x50 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
  .debug_macro   0x0000000000000000      0x26c HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
  .debug_macro   0x0000000000000000       0x83 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
- .debug_line    0x0000000000000000      0xe8c HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
- .debug_str     0x0000000000000000    0x81716 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
- .comment       0x0000000000000000       0x80 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
- .debug_frame   0x0000000000000000      0x54c HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
- .ARM.attributes
-                0x0000000000000000       0x33 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
  .group         0x0000000000000000        0xc HAL_Driver/Src/stm32f1xx_hal_uart.o
  .group         0x0000000000000000        0xc HAL_Driver/Src/stm32f1xx_hal_uart.o
  .group         0x0000000000000000        0xc HAL_Driver/Src/stm32f1xx_hal_uart.o
@@ -8994,8 +8962,6 @@ Discarded input sections
  .group         0x0000000000000000        0xc src/main.o
  .group         0x0000000000000000        0xc src/main.o
  .text          0x0000000000000000        0x0 src/main.o
- .text.get_direction
-                0x0000000000000000       0x58 src/main.o
  .debug_macro   0x0000000000000000      0xa72 src/main.o
  .debug_macro   0x0000000000000000       0x22 src/main.o
  .debug_macro   0x0000000000000000       0x18 src/main.o
@@ -9755,7 +9721,7 @@ LOAD /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1
                 0x0000000008000000                g_pfnVectors
                 0x000000000800010c                . = ALIGN (0x4)
 
-.text           0x0000000008000110     0x65a8
+.text           0x0000000008000110     0x7200
                 0x0000000008000110                . = ALIGN (0x4)
  *(.text)
  .text          0x0000000008000110       0x40 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtbegin.o
@@ -9861,357 +9827,431 @@ LOAD /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1
  .text.HAL_GPIO_Init
                 0x000000000800119c      0x2bc HAL_Driver/Src/stm32f1xx_hal_gpio.o
                 0x000000000800119c                HAL_GPIO_Init
+ .text.HAL_GPIO_ReadPin
+                0x0000000008001458       0x2e HAL_Driver/Src/stm32f1xx_hal_gpio.o
+                0x0000000008001458                HAL_GPIO_ReadPin
  .text.HAL_GPIO_WritePin
-                0x0000000008001458       0x30 HAL_Driver/Src/stm32f1xx_hal_gpio.o
-                0x0000000008001458                HAL_GPIO_WritePin
+                0x0000000008001486       0x30 HAL_Driver/Src/stm32f1xx_hal_gpio.o
+                0x0000000008001486                HAL_GPIO_WritePin
  .text.HAL_MspInit
-                0x0000000008001488        0xc HAL_Driver/Src/stm32f1xx_hal_msp_template.o
-                0x0000000008001488                HAL_MspInit
+                0x00000000080014b6        0xc HAL_Driver/Src/stm32f1xx_hal_msp_template.o
+                0x00000000080014b6                HAL_MspInit
+ *fill*         0x00000000080014c2        0x2 
  .text.HAL_RCC_GetHCLKFreq
-                0x0000000008001494       0x14 HAL_Driver/Src/stm32f1xx_hal_rcc.o
-                0x0000000008001494                HAL_RCC_GetHCLKFreq
+                0x00000000080014c4       0x14 HAL_Driver/Src/stm32f1xx_hal_rcc.o
+                0x00000000080014c4                HAL_RCC_GetHCLKFreq
  .text.HAL_RCC_GetPCLK1Freq
-                0x00000000080014a8       0x28 HAL_Driver/Src/stm32f1xx_hal_rcc.o
-                0x00000000080014a8                HAL_RCC_GetPCLK1Freq
+                0x00000000080014d8       0x28 HAL_Driver/Src/stm32f1xx_hal_rcc.o
+                0x00000000080014d8                HAL_RCC_GetPCLK1Freq
  .text.HAL_RCC_GetPCLK2Freq
-                0x00000000080014d0       0x28 HAL_Driver/Src/stm32f1xx_hal_rcc.o
-                0x00000000080014d0                HAL_RCC_GetPCLK2Freq
+                0x0000000008001500       0x28 HAL_Driver/Src/stm32f1xx_hal_rcc.o
+                0x0000000008001500                HAL_RCC_GetPCLK2Freq
+ .text.HAL_TIM_Base_Init
+                0x0000000008001528       0x56 HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x0000000008001528                HAL_TIM_Base_Init
+ .text.HAL_TIM_Base_MspInit
+                0x000000000800157e       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x000000000800157e                HAL_TIM_Base_MspInit
+ .text.HAL_TIM_Base_Start
+                0x0000000008001590       0x34 HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x0000000008001590                HAL_TIM_Base_Start
+ .text.HAL_TIM_Base_Stop
+                0x00000000080015c4       0x54 HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x00000000080015c4                HAL_TIM_Base_Stop
+ .text.HAL_TIM_Base_Start_IT
+                0x0000000008001618       0x24 HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x0000000008001618                HAL_TIM_Base_Start_IT
  .text.HAL_TIM_Encoder_Init
-                0x00000000080014f8      0x12c HAL_Driver/Src/stm32f1xx_hal_tim.o
-                0x00000000080014f8                HAL_TIM_Encoder_Init
+                0x000000000800163c      0x12c HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x000000000800163c                HAL_TIM_Encoder_Init
  .text.HAL_TIM_Encoder_MspInit
-                0x0000000008001624       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
-                0x0000000008001624                HAL_TIM_Encoder_MspInit
+                0x0000000008001768       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x0000000008001768                HAL_TIM_Encoder_MspInit
  .text.HAL_TIM_Encoder_Start
-                0x0000000008001636       0x6e HAL_Driver/Src/stm32f1xx_hal_tim.o
-                0x0000000008001636                HAL_TIM_Encoder_Start
+                0x000000000800177a       0x6e HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x000000000800177a                HAL_TIM_Encoder_Start
+ .text.HAL_TIM_IRQHandler
+                0x00000000080017e8      0x210 HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x00000000080017e8                HAL_TIM_IRQHandler
+ .text.HAL_TIM_OC_DelayElapsedCallback
+                0x00000000080019f8       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x00000000080019f8                HAL_TIM_OC_DelayElapsedCallback
+ .text.HAL_TIM_IC_CaptureCallback
+                0x0000000008001a0a       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x0000000008001a0a                HAL_TIM_IC_CaptureCallback
+ .text.HAL_TIM_PWM_PulseFinishedCallback
+                0x0000000008001a1c       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x0000000008001a1c                HAL_TIM_PWM_PulseFinishedCallback
+ .text.HAL_TIM_TriggerCallback
+                0x0000000008001a2e       0x12 HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x0000000008001a2e                HAL_TIM_TriggerCallback
  .text.TIM_Base_SetConfig
-                0x00000000080016a4       0xcc HAL_Driver/Src/stm32f1xx_hal_tim.o
-                0x00000000080016a4                TIM_Base_SetConfig
+                0x0000000008001a40       0xcc HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x0000000008001a40                TIM_Base_SetConfig
  .text.TIM_CCxChannelCmd
-                0x0000000008001770       0x44 HAL_Driver/Src/stm32f1xx_hal_tim.o
-                0x0000000008001770                TIM_CCxChannelCmd
+                0x0000000008001b0c       0x44 HAL_Driver/Src/stm32f1xx_hal_tim.o
+                0x0000000008001b0c                TIM_CCxChannelCmd
+ .text.HAL_TIMEx_CommutationCallback
+                0x0000000008001b50       0x12 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
+                0x0000000008001b50                HAL_TIMEx_CommutationCallback
+ .text.HAL_TIMEx_BreakCallback
+                0x0000000008001b62       0x12 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
+                0x0000000008001b62                HAL_TIMEx_BreakCallback
  .text.HAL_UART_Init
-                0x00000000080017b4       0x9a HAL_Driver/Src/stm32f1xx_hal_uart.o
-                0x00000000080017b4                HAL_UART_Init
+                0x0000000008001b74       0x9a HAL_Driver/Src/stm32f1xx_hal_uart.o
+                0x0000000008001b74                HAL_UART_Init
  .text.HAL_UART_MspInit
-                0x000000000800184e       0x12 HAL_Driver/Src/stm32f1xx_hal_uart.o
-                0x000000000800184e                HAL_UART_MspInit
+                0x0000000008001c0e       0x12 HAL_Driver/Src/stm32f1xx_hal_uart.o
+                0x0000000008001c0e                HAL_UART_MspInit
  .text.HAL_UART_Transmit
-                0x0000000008001860      0x132 HAL_Driver/Src/stm32f1xx_hal_uart.o
-                0x0000000008001860                HAL_UART_Transmit
+                0x0000000008001c20      0x132 HAL_Driver/Src/stm32f1xx_hal_uart.o
+                0x0000000008001c20                HAL_UART_Transmit
  .text.UART_WaitOnFlagUntilTimeout
-                0x0000000008001992       0x94 HAL_Driver/Src/stm32f1xx_hal_uart.o
- *fill*         0x0000000008001a26        0x2 
+                0x0000000008001d52       0x94 HAL_Driver/Src/stm32f1xx_hal_uart.o
+ *fill*         0x0000000008001de6        0x2 
  .text.UART_SetConfig
-                0x0000000008001a28      0x230 HAL_Driver/Src/stm32f1xx_hal_uart.o
- .text.abs_val  0x0000000008001c58       0x20 src/main.o
-                0x0000000008001c58                abs_val
+                0x0000000008001de8      0x230 HAL_Driver/Src/stm32f1xx_hal_uart.o
+ .text.abs_val  0x0000000008002018       0x20 src/main.o
+                0x0000000008002018                abs_val
  .text.send_string
-                0x0000000008001c78       0x2c src/main.o
-                0x0000000008001c78                send_string
+                0x0000000008002038       0x2c src/main.o
+                0x0000000008002038                send_string
+ .text.TIM4_IRQHandler
+                0x0000000008002064       0x14 src/main.o
+                0x0000000008002064                TIM4_IRQHandler
+ .text.HAL_TIM_PeriodElapsedCallback
+                0x0000000008002078       0x12 src/main.o
+                0x0000000008002078                HAL_TIM_PeriodElapsedCallback
+ *fill*         0x000000000800208a        0x2 
  .text.F1_start_clk
-                0x0000000008001ca4       0x2c src/main.o
-                0x0000000008001ca4                F1_start_clk
+                0x000000000800208c       0x30 src/main.o
+                0x000000000800208c                F1_start_clk
  .text.F1_start_ant
-                0x0000000008001cd0       0x30 src/main.o
-                0x0000000008001cd0                F1_start_ant
- .text.F1_stop  0x0000000008001d00       0x50 src/main.o
-                0x0000000008001d00                F1_stop
+                0x00000000080020bc       0x30 src/main.o
+                0x00000000080020bc                F1_start_ant
+ .text.F1_stop  0x00000000080020ec       0x54 src/main.o
+                0x00000000080020ec                F1_stop
+ .text.F2_start_clk
+                0x0000000008002140       0x30 src/main.o
+                0x0000000008002140                F2_start_clk
+ .text.F2_start_ant
+                0x0000000008002170       0x30 src/main.o
+                0x0000000008002170                F2_start_ant
+ .text.F2_stop  0x00000000080021a0       0x54 src/main.o
+                0x00000000080021a0                F2_stop
+ .text.U_start_clk
+                0x00000000080021f4       0x30 src/main.o
+                0x00000000080021f4                U_start_clk
+ .text.U_start_ant
+                0x0000000008002224       0x30 src/main.o
+                0x0000000008002224                U_start_ant
+ .text.U_stop   0x0000000008002254       0x54 src/main.o
+                0x0000000008002254                U_stop
  .text.start_position
-                0x0000000008001d50       0xa0 src/main.o
-                0x0000000008001d50                start_position
+                0x00000000080022a8      0x1ac src/main.o
+                0x00000000080022a8                start_position
  .text.begin_movement
-                0x0000000008001df0       0x8c src/main.o
-                0x0000000008001df0                begin_movement
- .text.rotate   0x0000000008001e7c       0xd0 src/main.o
-                0x0000000008001e7c                rotate
- .text.EXTI15_10_IRQHandler
-                0x0000000008001f4c       0x40 src/main.o
-                0x0000000008001f4c                EXTI15_10_IRQHandler
- .text.EXTI9_5_IRQHandler
-                0x0000000008001f8c       0x90 src/main.o
-                0x0000000008001f8c                EXTI9_5_IRQHandler
- .text.TIM2_IRQHandler
-                0x000000000800201c       0x24 src/main.o
-                0x000000000800201c                TIM2_IRQHandler
+                0x0000000008002454      0x108 src/main.o
+                0x0000000008002454                begin_movement
+ .text.rotate   0x000000000800255c       0xd4 src/main.o
+                0x000000000800255c                rotate
+ .text.start_axis
+                0x0000000008002630       0x5a src/main.o
+                0x0000000008002630                start_axis
+ .text.stop_axis
+                0x000000000800268a       0x36 src/main.o
+                0x000000000800268a                stop_axis
+ .text.get_axis_rotation
+                0x00000000080026c0       0x44 src/main.o
+                0x00000000080026c0                get_axis_rotation
+ .text.set_axis_rotation
+                0x0000000008002704       0x48 src/main.o
+                0x0000000008002704                set_axis_rotation
+ .text.check_input_status
+                0x000000000800274c      0x1b4 src/main.o
+                0x000000000800274c                check_input_status
  .text.print_moves
-                0x0000000008002040       0x98 src/main.o
-                0x0000000008002040                print_moves
- .text.main     0x00000000080020d8      0x35c src/main.o
-                0x00000000080020d8                main
+                0x0000000008002900       0x98 src/main.o
+                0x0000000008002900                print_moves
+ .text.main     0x0000000008002998      0x218 src/main.o
+                0x0000000008002998                main
+ .text.manipulator_config
+                0x0000000008002bb0      0x4dc src/main.o
+                0x0000000008002bb0                manipulator_config
  .text.SysTick_Handler
-                0x0000000008002434       0x10 src/stm32f1xx_it.o
-                0x0000000008002434                SysTick_Handler
- .text._sbrk    0x0000000008002444       0x58 src/syscalls.o
-                0x0000000008002444                _sbrk
+                0x000000000800308c       0x10 src/stm32f1xx_it.o
+                0x000000000800308c                SysTick_Handler
+ .text._sbrk    0x000000000800309c       0x58 src/syscalls.o
+                0x000000000800309c                _sbrk
  .text.SystemInit
-                0x000000000800249c       0x68 src/system_stm32f1xx.o
-                0x000000000800249c                SystemInit
+                0x00000000080030f4       0x68 src/system_stm32f1xx.o
+                0x00000000080030f4                SystemInit
  .text.Reset_Handler
-                0x0000000008002504       0x48 startup/startup_stm32f103xb.o
-                0x0000000008002504                Reset_Handler
+                0x000000000800315c       0x48 startup/startup_stm32f103xb.o
+                0x000000000800315c                Reset_Handler
  .text.Default_Handler
-                0x000000000800254c        0x2 startup/startup_stm32f103xb.o
-                0x000000000800254c                RTC_Alarm_IRQHandler
-                0x000000000800254c                EXTI2_IRQHandler
-                0x000000000800254c                DebugMon_Handler
-                0x000000000800254c                TIM1_CC_IRQHandler
-                0x000000000800254c                HardFault_Handler
-                0x000000000800254c                PVD_IRQHandler
-                0x000000000800254c                PendSV_Handler
-                0x000000000800254c                NMI_Handler
-                0x000000000800254c                EXTI3_IRQHandler
-                0x000000000800254c                EXTI0_IRQHandler
-                0x000000000800254c                I2C2_EV_IRQHandler
-                0x000000000800254c                UsageFault_Handler
-                0x000000000800254c                ADC1_2_IRQHandler
-                0x000000000800254c                SPI1_IRQHandler
-                0x000000000800254c                TAMPER_IRQHandler
-                0x000000000800254c                DMA1_Channel4_IRQHandler
-                0x000000000800254c                USART3_IRQHandler
-                0x000000000800254c                RTC_IRQHandler
-                0x000000000800254c                DMA1_Channel7_IRQHandler
-                0x000000000800254c                CAN1_RX1_IRQHandler
-                0x000000000800254c                TIM4_IRQHandler
-                0x000000000800254c                I2C1_EV_IRQHandler
-                0x000000000800254c                DMA1_Channel6_IRQHandler
-                0x000000000800254c                TIM3_IRQHandler
-                0x000000000800254c                RCC_IRQHandler
-                0x000000000800254c                TIM1_TRG_COM_IRQHandler
-                0x000000000800254c                DMA1_Channel1_IRQHandler
-                0x000000000800254c                Default_Handler
-                0x000000000800254c                SPI2_IRQHandler
-                0x000000000800254c                MemManage_Handler
-                0x000000000800254c                SVC_Handler
-                0x000000000800254c                DMA1_Channel5_IRQHandler
-                0x000000000800254c                EXTI4_IRQHandler
-                0x000000000800254c                USB_LP_CAN1_RX0_IRQHandler
-                0x000000000800254c                USB_HP_CAN1_TX_IRQHandler
-                0x000000000800254c                DMA1_Channel3_IRQHandler
-                0x000000000800254c                TIM1_UP_IRQHandler
-                0x000000000800254c                WWDG_IRQHandler
-                0x000000000800254c                TIM1_BRK_IRQHandler
-                0x000000000800254c                EXTI1_IRQHandler
-                0x000000000800254c                USART2_IRQHandler
-                0x000000000800254c                I2C2_ER_IRQHandler
-                0x000000000800254c                DMA1_Channel2_IRQHandler
-                0x000000000800254c                CAN1_SCE_IRQHandler
-                0x000000000800254c                FLASH_IRQHandler
-                0x000000000800254c                BusFault_Handler
-                0x000000000800254c                USART1_IRQHandler
-                0x000000000800254c                I2C1_ER_IRQHandler
-                0x000000000800254c                USBWakeUp_IRQHandler
- *fill*         0x000000000800254e        0x2 
- .text.__errno  0x0000000008002550        0xc /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-errno.o)
-                0x0000000008002550                __errno
+                0x00000000080031a4        0x2 startup/startup_stm32f103xb.o
+                0x00000000080031a4                RTC_Alarm_IRQHandler
+                0x00000000080031a4                EXTI2_IRQHandler
+                0x00000000080031a4                DebugMon_Handler
+                0x00000000080031a4                TIM1_CC_IRQHandler
+                0x00000000080031a4                HardFault_Handler
+                0x00000000080031a4                PVD_IRQHandler
+                0x00000000080031a4                PendSV_Handler
+                0x00000000080031a4                NMI_Handler
+                0x00000000080031a4                EXTI3_IRQHandler
+                0x00000000080031a4                EXTI0_IRQHandler
+                0x00000000080031a4                I2C2_EV_IRQHandler
+                0x00000000080031a4                UsageFault_Handler
+                0x00000000080031a4                ADC1_2_IRQHandler
+                0x00000000080031a4                SPI1_IRQHandler
+                0x00000000080031a4                TAMPER_IRQHandler
+                0x00000000080031a4                DMA1_Channel4_IRQHandler
+                0x00000000080031a4                USART3_IRQHandler
+                0x00000000080031a4                RTC_IRQHandler
+                0x00000000080031a4                DMA1_Channel7_IRQHandler
+                0x00000000080031a4                CAN1_RX1_IRQHandler
+                0x00000000080031a4                I2C1_EV_IRQHandler
+                0x00000000080031a4                DMA1_Channel6_IRQHandler
+                0x00000000080031a4                TIM3_IRQHandler
+                0x00000000080031a4                RCC_IRQHandler
+                0x00000000080031a4                TIM1_TRG_COM_IRQHandler
+                0x00000000080031a4                DMA1_Channel1_IRQHandler
+                0x00000000080031a4                Default_Handler
+                0x00000000080031a4                EXTI15_10_IRQHandler
+                0x00000000080031a4                EXTI9_5_IRQHandler
+                0x00000000080031a4                SPI2_IRQHandler
+                0x00000000080031a4                MemManage_Handler
+                0x00000000080031a4                SVC_Handler
+                0x00000000080031a4                DMA1_Channel5_IRQHandler
+                0x00000000080031a4                EXTI4_IRQHandler
+                0x00000000080031a4                USB_LP_CAN1_RX0_IRQHandler
+                0x00000000080031a4                USB_HP_CAN1_TX_IRQHandler
+                0x00000000080031a4                DMA1_Channel3_IRQHandler
+                0x00000000080031a4                TIM1_UP_IRQHandler
+                0x00000000080031a4                WWDG_IRQHandler
+                0x00000000080031a4                TIM2_IRQHandler
+                0x00000000080031a4                TIM1_BRK_IRQHandler
+                0x00000000080031a4                EXTI1_IRQHandler
+                0x00000000080031a4                USART2_IRQHandler
+                0x00000000080031a4                I2C2_ER_IRQHandler
+                0x00000000080031a4                DMA1_Channel2_IRQHandler
+                0x00000000080031a4                CAN1_SCE_IRQHandler
+                0x00000000080031a4                FLASH_IRQHandler
+                0x00000000080031a4                BusFault_Handler
+                0x00000000080031a4                USART1_IRQHandler
+                0x00000000080031a4                I2C1_ER_IRQHandler
+                0x00000000080031a4                USBWakeUp_IRQHandler
+ *fill*         0x00000000080031a6        0x2 
+ .text.__errno  0x00000000080031a8        0xc /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-errno.o)
+                0x00000000080031a8                __errno
  .text.__libc_init_array
-                0x000000000800255c       0x48 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-init.o)
-                0x000000000800255c                __libc_init_array
- .text.memset   0x00000000080025a4       0x94 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memset.o)
-                0x00000000080025a4                memset
- .text.sprintf  0x0000000008002638       0x44 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-sprintf.o)
-                0x0000000008002638                sprintf
- .text.strlen   0x000000000800267c       0x5c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-strlen-stub.o)
-                0x000000000800267c                strlen
+                0x00000000080031b4       0x48 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-init.o)
+                0x00000000080031b4                __libc_init_array
+ .text.memset   0x00000000080031fc       0x94 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memset.o)
+                0x00000000080031fc                memset
+ .text.sprintf  0x0000000008003290       0x44 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-sprintf.o)
+                0x0000000008003290                sprintf
+ .text.strlen   0x00000000080032d4       0x5c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-strlen-stub.o)
+                0x00000000080032d4                strlen
  .text._svfprintf_r
-                0x00000000080026d8     0x1a04 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfprintf.o)
-                0x00000000080026d8                _svfprintf_r
+                0x0000000008003330     0x1a04 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfprintf.o)
+                0x0000000008003330                _svfprintf_r
  .text.startup.register_fini
-                0x00000000080040dc       0x14 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__call_atexit.o)
- .text.atexit   0x00000000080040f0        0xc /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-atexit.o)
-                0x00000000080040f0                atexit
- .text.quorem   0x00000000080040fc      0x124 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-dtoa.o)
- .text._dtoa_r  0x0000000008004220      0xe30 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-dtoa.o)
-                0x0000000008004220                _dtoa_r
+                0x0000000008004d34       0x14 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__call_atexit.o)
+ .text.atexit   0x0000000008004d48        0xc /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-atexit.o)
+                0x0000000008004d48                atexit
+ .text.quorem   0x0000000008004d54      0x124 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-dtoa.o)
+ .text._dtoa_r  0x0000000008004e78      0xe30 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-dtoa.o)
+                0x0000000008004e78                _dtoa_r
  .text.__libc_fini_array
-                0x0000000008005050       0x34 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-fini.o)
-                0x0000000008005050                __libc_fini_array
+                0x0000000008005ca8       0x34 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-fini.o)
+                0x0000000008005ca8                __libc_fini_array
  .text._malloc_trim_r
-                0x0000000008005084       0xa0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-freer.o)
-                0x0000000008005084                _malloc_trim_r
- .text._free_r  0x0000000008005124      0x1e8 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-freer.o)
-                0x0000000008005124                _free_r
+                0x0000000008005cdc       0xa0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-freer.o)
+                0x0000000008005cdc                _malloc_trim_r
+ .text._free_r  0x0000000008005d7c      0x1e8 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-freer.o)
+                0x0000000008005d7c                _free_r
  .text._localeconv_r
-                0x000000000800530c       0x1c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-localeconv.o)
-                0x000000000800530c                _localeconv_r
+                0x0000000008005f64       0x1c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-localeconv.o)
+                0x0000000008005f64                _localeconv_r
  .text.__retarget_lock_acquire_recursive
-                0x0000000008005328        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
-                0x0000000008005328                __retarget_lock_acquire_recursive
+                0x0000000008005f80        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
+                0x0000000008005f80                __retarget_lock_acquire_recursive
  .text.__retarget_lock_release_recursive
-                0x000000000800532c        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
-                0x000000000800532c                __retarget_lock_release_recursive
+                0x0000000008005f84        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
+                0x0000000008005f84                __retarget_lock_release_recursive
  .text._malloc_r
-                0x0000000008005330      0x524 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mallocr.o)
-                0x0000000008005330                _malloc_r
- .text.memchr   0x0000000008005854       0x8c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memchr-stub.o)
-                0x0000000008005854                memchr
+                0x0000000008005f88      0x524 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mallocr.o)
+                0x0000000008005f88                _malloc_r
+ .text.memchr   0x00000000080064ac       0x8c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memchr-stub.o)
+                0x00000000080064ac                memchr
  .text.__malloc_lock
-                0x00000000080058e0        0xc /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mlock.o)
-                0x00000000080058e0                __malloc_lock
+                0x0000000008006538        0xc /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mlock.o)
+                0x0000000008006538                __malloc_lock
  .text.__malloc_unlock
-                0x00000000080058ec        0xc /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mlock.o)
-                0x00000000080058ec                __malloc_unlock
- .text._Balloc  0x00000000080058f8       0x4c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x00000000080058f8                _Balloc
- .text._Bfree   0x0000000008005944       0x14 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x0000000008005944                _Bfree
+                0x0000000008006544        0xc /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mlock.o)
+                0x0000000008006544                __malloc_unlock
+ .text._Balloc  0x0000000008006550       0x4c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x0000000008006550                _Balloc
+ .text._Bfree   0x000000000800659c       0x14 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x000000000800659c                _Bfree
  .text.__multadd
-                0x0000000008005958       0x84 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x0000000008005958                __multadd
+                0x00000000080065b0       0x84 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x00000000080065b0                __multadd
  .text.__hi0bits
-                0x00000000080059dc       0x40 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x00000000080059dc                __hi0bits
+                0x0000000008006634       0x40 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x0000000008006634                __hi0bits
  .text.__lo0bits
-                0x0000000008005a1c       0x60 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x0000000008005a1c                __lo0bits
- .text.__i2b    0x0000000008005a7c       0x14 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x0000000008005a7c                __i2b
+                0x0000000008006674       0x60 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x0000000008006674                __lo0bits
+ .text.__i2b    0x00000000080066d4       0x14 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x00000000080066d4                __i2b
  .text.__multiply
-                0x0000000008005a90      0x14c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x0000000008005a90                __multiply
+                0x00000000080066e8      0x14c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x00000000080066e8                __multiply
  .text.__pow5mult
-                0x0000000008005bdc       0xa0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x0000000008005bdc                __pow5mult
+                0x0000000008006834       0xa0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x0000000008006834                __pow5mult
  .text.__lshift
-                0x0000000008005c7c       0xb4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x0000000008005c7c                __lshift
- .text.__mcmp   0x0000000008005d30       0x38 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x0000000008005d30                __mcmp
- .text.__mdiff  0x0000000008005d68      0x100 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x0000000008005d68                __mdiff
- .text.__d2b    0x0000000008005e68       0xb0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x0000000008005e68                __d2b
- .text.frexp    0x0000000008005f18       0x64 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-s_frexp.o)
-                0x0000000008005f18                frexp
- .text._sbrk_r  0x0000000008005f7c       0x24 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-sbrkr.o)
-                0x0000000008005f7c                _sbrk_r
- .text.strncpy  0x0000000008005fa0       0x64 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-strncpy.o)
-                0x0000000008005fa0                strncpy
+                0x00000000080068d4       0xb4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x00000000080068d4                __lshift
+ .text.__mcmp   0x0000000008006988       0x38 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x0000000008006988                __mcmp
+ .text.__mdiff  0x00000000080069c0      0x100 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x00000000080069c0                __mdiff
+ .text.__d2b    0x0000000008006ac0       0xb0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x0000000008006ac0                __d2b
+ .text.frexp    0x0000000008006b70       0x64 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-s_frexp.o)
+                0x0000000008006b70                frexp
+ .text._sbrk_r  0x0000000008006bd4       0x24 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-sbrkr.o)
+                0x0000000008006bd4                _sbrk_r
+ .text.strncpy  0x0000000008006bf8       0x64 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-strncpy.o)
+                0x0000000008006bf8                strncpy
  .text.__ssprint_r
-                0x0000000008006004       0xf4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfiprintf.o)
-                0x0000000008006004                __ssprint_r
+                0x0000000008006c5c       0xf4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfiprintf.o)
+                0x0000000008006c5c                __ssprint_r
  .text.__register_exitproc
-                0x00000000080060f8       0xc0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__atexit.o)
-                0x00000000080060f8                __register_exitproc
+                0x0000000008006d50       0xc0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__atexit.o)
+                0x0000000008006d50                __register_exitproc
  .text._calloc_r
-                0x00000000080061b8       0x6c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-callocr.o)
-                0x00000000080061b8                _calloc_r
+                0x0000000008006e10       0x6c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-callocr.o)
+                0x0000000008006e10                _calloc_r
  .text.__ascii_mbtowc
-                0x0000000008006224       0x2c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mbtowc_r.o)
-                0x0000000008006224                __ascii_mbtowc
- .text.memmove  0x0000000008006250       0xc4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memmove.o)
-                0x0000000008006250                memmove
+                0x0000000008006e7c       0x2c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mbtowc_r.o)
+                0x0000000008006e7c                __ascii_mbtowc
+ .text.memmove  0x0000000008006ea8       0xc4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memmove.o)
+                0x0000000008006ea8                memmove
  .text._realloc_r
-                0x0000000008006314      0x374 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-reallocr.o)
-                0x0000000008006314                _realloc_r
+                0x0000000008006f6c      0x374 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-reallocr.o)
+                0x0000000008006f6c                _realloc_r
  .text.__ascii_wctomb
-                0x0000000008006688       0x18 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-wctomb_r.o)
-                0x0000000008006688                __ascii_wctomb
+                0x00000000080072e0       0x18 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-wctomb_r.o)
+                0x00000000080072e0                __ascii_wctomb
  *(.glue_7)
- .glue_7        0x00000000080066a0        0x0 linker stubs
+ .glue_7        0x00000000080072f8        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x00000000080066a0        0x0 linker stubs
+ .glue_7t       0x00000000080072f8        0x0 linker stubs
  *(.eh_frame)
- .eh_frame      0x00000000080066a0        0x0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtbegin.o
+ .eh_frame      0x00000000080072f8        0x0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtbegin.o
  *(.init)
- .init          0x00000000080066a0        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crti.o
-                0x00000000080066a0                _init
- .init          0x00000000080066a4        0x8 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtn.o
+ .init          0x00000000080072f8        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crti.o
+                0x00000000080072f8                _init
+ .init          0x00000000080072fc        0x8 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtn.o
  *(.fini)
- .fini          0x00000000080066ac        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crti.o
-                0x00000000080066ac                _fini
- .fini          0x00000000080066b0        0x8 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtn.o
-                0x00000000080066b8                . = ALIGN (0x4)
-                0x00000000080066b8                _etext = .
+ .fini          0x0000000008007304        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crti.o
+                0x0000000008007304                _fini
+ .fini          0x0000000008007308        0x8 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtn.o
+                0x0000000008007310                . = ALIGN (0x4)
+                0x0000000008007310                _etext = .
 
-.vfp11_veneer   0x00000000080066b8        0x0
- .vfp11_veneer  0x00000000080066b8        0x0 linker stubs
+.vfp11_veneer   0x0000000008007310        0x0
+ .vfp11_veneer  0x0000000008007310        0x0 linker stubs
 
-.v4_bx          0x00000000080066b8        0x0
- .v4_bx         0x00000000080066b8        0x0 linker stubs
+.v4_bx          0x0000000008007310        0x0
+ .v4_bx         0x0000000008007310        0x0 linker stubs
 
-.iplt           0x00000000080066b8        0x0
- .iplt          0x00000000080066b8        0x0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtbegin.o
+.iplt           0x0000000008007310        0x0
+ .iplt          0x0000000008007310        0x0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtbegin.o
 
-.rodata         0x00000000080066b8      0x3b8
-                0x00000000080066b8                . = ALIGN (0x4)
+.rodata         0x0000000008007310      0x488
+                0x0000000008007310                . = ALIGN (0x4)
  *(.rodata)
- .rodata        0x00000000080066b8      0x115 src/main.o
- *fill*         0x00000000080067cd        0x3 
- .rodata        0x00000000080067d0       0x18 src/system_stm32f1xx.o
-                0x00000000080067d0                AHBPrescTable
-                0x00000000080067e0                APBPrescTable
+ .rodata        0x0000000008007310      0x1e5 src/main.o
+ *fill*         0x00000000080074f5        0x3 
+ .rodata        0x00000000080074f8       0x18 src/system_stm32f1xx.o
+                0x00000000080074f8                AHBPrescTable
+                0x0000000008007508                APBPrescTable
  *(.rodata*)
  .rodata._global_impure_ptr
-                0x00000000080067e8        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-impure.o)
-                0x00000000080067e8                _global_impure_ptr
+                0x0000000008007510        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-impure.o)
+                0x0000000008007510                _global_impure_ptr
  .rodata._svfprintf_r.str1.4
-                0x00000000080067ec       0x42 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfprintf.o)
- *fill*         0x000000000800682e        0x2 
+                0x0000000008007514       0x42 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfprintf.o)
+ *fill*         0x0000000008007556        0x2 
  .rodata.blanks.7315
-                0x0000000008006830       0x10 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfprintf.o)
+                0x0000000008007558       0x10 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfprintf.o)
  .rodata.zeroes.7316
-                0x0000000008006840       0x10 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfprintf.o)
+                0x0000000008007568       0x10 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfprintf.o)
  .rodata._dtoa_r.str1.4
-                0x0000000008006850       0x10 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-dtoa.o)
+                0x0000000008007578       0x10 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-dtoa.o)
                                          0x12 (size before relaxing)
  .rodata.__mprec_bigtens
-                0x0000000008006860       0x28 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x0000000008006860                __mprec_bigtens
+                0x0000000008007588       0x28 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x0000000008007588                __mprec_bigtens
  .rodata.__mprec_tens
-                0x0000000008006888       0xc8 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
-                0x0000000008006888                __mprec_tens
+                0x00000000080075b0       0xc8 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x00000000080075b0                __mprec_tens
  .rodata.p05.6092
-                0x0000000008006950        0xc /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x0000000008007678        0xc /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
  .rodata._setlocale_r.str1.4
-                0x000000000800695c        0xa /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-locale.o)
+                0x0000000008007684        0xa /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-locale.o)
                                           0xd (size before relaxing)
- *fill*         0x0000000008006966        0x2 
+ *fill*         0x000000000800768e        0x2 
  .rodata.str1.4
-                0x0000000008006968        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-locale.o)
+                0x0000000008007690        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-locale.o)
                                           0x2 (size before relaxing)
  .rodata._ctype_
-                0x000000000800696c      0x101 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-ctype_.o)
-                0x000000000800696c                _ctype_
-                0x0000000008006a70                . = ALIGN (0x4)
- *fill*         0x0000000008006a6d        0x3 
+                0x0000000008007694      0x101 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-ctype_.o)
+                0x0000000008007694                _ctype_
+                0x0000000008007798                . = ALIGN (0x4)
+ *fill*         0x0000000008007795        0x3 
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
 
-.ARM            0x0000000008006a70        0x8
-                0x0000000008006a70                __exidx_start = .
+.ARM            0x0000000008007798        0x8
+                0x0000000008007798                __exidx_start = .
  *(.ARM.exidx*)
- .ARM.exidx     0x0000000008006a70        0x8 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_udivmoddi4.o)
-                0x0000000008006a78                __exidx_end = .
+ .ARM.exidx     0x0000000008007798        0x8 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_udivmoddi4.o)
+                0x00000000080077a0                __exidx_end = .
 
-.rel.dyn        0x0000000008006a78        0x0
- .rel.iplt      0x0000000008006a78        0x0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtbegin.o
+.rel.dyn        0x00000000080077a0        0x0
+ .rel.iplt      0x00000000080077a0        0x0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtbegin.o
 
-.preinit_array  0x0000000008006a78        0x0
-                0x0000000008006a78                PROVIDE (__preinit_array_start = .)
+.preinit_array  0x00000000080077a0        0x0
+                0x00000000080077a0                PROVIDE (__preinit_array_start = .)
  *(.preinit_array*)
-                0x0000000008006a78                PROVIDE (__preinit_array_end = .)
+                0x00000000080077a0                PROVIDE (__preinit_array_end = .)
 
-.init_array     0x0000000008006a78        0x8
-                0x0000000008006a78                PROVIDE (__init_array_start = .)
+.init_array     0x00000000080077a0        0x8
+                0x00000000080077a0                PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  .init_array.00000
-                0x0000000008006a78        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__call_atexit.o)
+                0x00000000080077a0        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__call_atexit.o)
  *(.init_array*)
- .init_array    0x0000000008006a7c        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtbegin.o
-                0x0000000008006a80                PROVIDE (__init_array_end = .)
+ .init_array    0x00000000080077a4        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtbegin.o
+                0x00000000080077a8                PROVIDE (__init_array_end = .)
 
-.fini_array     0x0000000008006a80        0x4
-                0x0000000008006a80                PROVIDE (__fini_array_start = .)
+.fini_array     0x00000000080077a8        0x4
+                0x00000000080077a8                PROVIDE (__fini_array_start = .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x0000000008006a80        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtbegin.o
-                0x0000000008006a84                PROVIDE (__fini_array_end = .)
-                0x0000000008006a84                _sidata = LOADADDR (.data)
+ .fini_array    0x00000000080077a8        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtbegin.o
+                0x00000000080077ac                PROVIDE (__fini_array_end = .)
+                0x00000000080077ac                _sidata = LOADADDR (.data)
 
-.data           0x0000000020000000      0x9d8 load address 0x0000000008006a84
+.data           0x0000000020000000      0x9d8 load address 0x00000000080077ac
                 0x0000000020000000                . = ALIGN (0x4)
                 0x0000000020000000                _sdata = .
  *(.data)
@@ -10249,72 +10289,78 @@ LOAD /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1
                 0x00000000200009d8                . = ALIGN (0x4)
                 0x00000000200009d8                _edata = .
 
-.igot.plt       0x00000000200009d8        0x0 load address 0x000000000800745c
+.igot.plt       0x00000000200009d8        0x0 load address 0x0000000008008184
  .igot.plt      0x00000000200009d8        0x0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtbegin.o
                 0x00000000200009d8                . = ALIGN (0x4)
 
-.bss            0x00000000200009d8     0x20ac load address 0x000000000800745c
+.bss            0x00000000200009d8     0x21c0 load address 0x0000000008008184
                 0x00000000200009d8                _sbss = .
                 0x00000000200009d8                __bss_start__ = _sbss
  *(.bss)
  .bss           0x00000000200009d8       0x1c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtbegin.o
- .bss           0x00000000200009f4       0x10 src/main.o
-                0x00000000200009f4                current_move
-                0x00000000200009f8                in_move
-                0x00000000200009fc                dir
-                0x0000000020000a00                man_start
- .bss           0x0000000020000a04        0x8 src/syscalls.o
-                0x0000000020000a04                __env
+ .bss           0x00000000200009f4       0x14 src/main.o
+                0x00000000200009f4                in_move
+                0x00000000200009f8                start_move
+                0x00000000200009fc                register_move
+                0x0000000020000a00                was_test_performed
+                0x0000000020000a04                move_index
+ .bss           0x0000000020000a08        0x8 src/syscalls.o
+                0x0000000020000a08                __env
  *(.bss*)
  .bss.__malloc_current_mallinfo
-                0x0000000020000a0c       0x28 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mallocr.o)
-                0x0000000020000a0c                __malloc_current_mallinfo
+                0x0000000020000a10       0x28 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mallocr.o)
+                0x0000000020000a10                __malloc_current_mallinfo
  .bss.__malloc_max_sbrked_mem
-                0x0000000020000a34        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mallocr.o)
-                0x0000000020000a34                __malloc_max_sbrked_mem
- .bss.__malloc_max_total_mem
                 0x0000000020000a38        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mallocr.o)
-                0x0000000020000a38                __malloc_max_total_mem
- .bss.__malloc_top_pad
+                0x0000000020000a38                __malloc_max_sbrked_mem
+ .bss.__malloc_max_total_mem
                 0x0000000020000a3c        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mallocr.o)
-                0x0000000020000a3c                __malloc_top_pad
+                0x0000000020000a3c                __malloc_max_total_mem
+ .bss.__malloc_top_pad
+                0x0000000020000a40        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mallocr.o)
+                0x0000000020000a40                __malloc_top_pad
  *(COMMON)
- COMMON         0x0000000020000a40        0x4 HAL_Driver/Src/stm32f1xx_hal.o
-                0x0000000020000a40                uwTick
- COMMON         0x0000000020000a44     0x2018 src/main.o
-                0x0000000020000a44                timer
-                0x0000000020000a84                moves
-                0x00000000200029c4                encoder
-                0x00000000200029e8                message
-                0x0000000020002a1c                uart
- COMMON         0x0000000020002a5c       0x21 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
-                0x0000000020002a5c                __lock___atexit_recursive_mutex
-                0x0000000020002a60                __lock___arc4random_mutex
-                0x0000000020002a64                __lock___env_recursive_mutex
-                0x0000000020002a68                __lock___sinit_recursive_mutex
-                0x0000000020002a6c                __lock___malloc_recursive_mutex
-                0x0000000020002a70                __lock___at_quick_exit_mutex
-                0x0000000020002a74                __lock___dd_hash_mutex
-                0x0000000020002a78                __lock___tz_mutex
-                0x0000000020002a7c                __lock___sfp_recursive_mutex
- *fill*         0x0000000020002a7d        0x3 
- COMMON         0x0000000020002a80        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-reent.o)
-                0x0000000020002a80                errno
-                0x0000000020002a84                . = ALIGN (0x4)
-                0x0000000020002a84                _ebss = .
-                0x0000000020002a84                __bss_end__ = _ebss
+ COMMON         0x0000000020000a44        0x4 HAL_Driver/Src/stm32f1xx_hal.o
+                0x0000000020000a44                uwTick
+ COMMON         0x0000000020000a48     0x2128 src/main.o
+                0x0000000020000a48                debounceTimer
+                0x0000000020000a88                timer
+                0x0000000020000ac8                current_move
+                0x0000000020000ad0                moves
+                0x0000000020002a10                encoder
+                0x0000000020002a34                message
+                0x0000000020002a68                encoder_FI2
+                0x0000000020002a8c                encoder_U
+                0x0000000020002ab0                timer_FI2
+                0x0000000020002af0                timer_U
+                0x0000000020002b30                uart
+ COMMON         0x0000000020002b70       0x21 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
+                0x0000000020002b70                __lock___atexit_recursive_mutex
+                0x0000000020002b74                __lock___arc4random_mutex
+                0x0000000020002b78                __lock___env_recursive_mutex
+                0x0000000020002b7c                __lock___sinit_recursive_mutex
+                0x0000000020002b80                __lock___malloc_recursive_mutex
+                0x0000000020002b84                __lock___at_quick_exit_mutex
+                0x0000000020002b88                __lock___dd_hash_mutex
+                0x0000000020002b8c                __lock___tz_mutex
+                0x0000000020002b90                __lock___sfp_recursive_mutex
+ *fill*         0x0000000020002b91        0x3 
+ COMMON         0x0000000020002b94        0x4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-reent.o)
+                0x0000000020002b94                errno
+                0x0000000020002b98                . = ALIGN (0x4)
+                0x0000000020002b98                _ebss = .
+                0x0000000020002b98                __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x0000000020002a84      0x604 load address 0x000000000800745c
-                0x0000000020002a88                . = ALIGN (0x8)
- *fill*         0x0000000020002a84        0x4 
-                0x0000000020002a88                PROVIDE (end = .)
+                0x0000000020002b98      0x600 load address 0x0000000008008184
+                0x0000000020002b98                . = ALIGN (0x8)
+                0x0000000020002b98                PROVIDE (end = .)
                 [!provide]                        PROVIDE (_end = .)
-                0x0000000020002c88                . = (. + _Min_Heap_Size)
- *fill*         0x0000000020002a88      0x200 
-                0x0000000020003088                . = (. + _Min_Stack_Size)
- *fill*         0x0000000020002c88      0x400 
-                0x0000000020003088                . = ALIGN (0x8)
+                0x0000000020002d98                . = (. + _Min_Heap_Size)
+ *fill*         0x0000000020002b98      0x200 
+                0x0000000020003198                . = (. + _Min_Stack_Size)
+ *fill*         0x0000000020002d98      0x400 
+                0x0000000020003198                . = ALIGN (0x8)
 
 /DISCARD/
  libc.a(*)
@@ -10341,130 +10387,134 @@ LOAD /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1
  .ARM.attributes
                 0x0000000000000149       0x33 HAL_Driver/Src/stm32f1xx_hal_tim.o
  .ARM.attributes
-                0x000000000000017c       0x33 HAL_Driver/Src/stm32f1xx_hal_uart.o
+                0x000000000000017c       0x33 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
  .ARM.attributes
-                0x00000000000001af       0x33 src/main.o
+                0x00000000000001af       0x33 HAL_Driver/Src/stm32f1xx_hal_uart.o
  .ARM.attributes
-                0x00000000000001e2       0x33 src/stm32f1xx_it.o
+                0x00000000000001e2       0x33 src/main.o
  .ARM.attributes
-                0x0000000000000215       0x33 src/syscalls.o
+                0x0000000000000215       0x33 src/stm32f1xx_it.o
  .ARM.attributes
-                0x0000000000000248       0x33 src/system_stm32f1xx.o
+                0x0000000000000248       0x33 src/syscalls.o
  .ARM.attributes
-                0x000000000000027b       0x21 startup/startup_stm32f103xb.o
+                0x000000000000027b       0x33 src/system_stm32f1xx.o
  .ARM.attributes
-                0x000000000000029c       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-errno.o)
+                0x00000000000002ae       0x21 startup/startup_stm32f103xb.o
  .ARM.attributes
-                0x00000000000002c9       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-impure.o)
+                0x00000000000002cf       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-errno.o)
  .ARM.attributes
-                0x00000000000002f6       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-init.o)
+                0x00000000000002fc       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-impure.o)
  .ARM.attributes
-                0x0000000000000323       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memset.o)
+                0x0000000000000329       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-init.o)
  .ARM.attributes
-                0x0000000000000350       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-sprintf.o)
+                0x0000000000000356       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memset.o)
  .ARM.attributes
-                0x000000000000037d       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-strlen-stub.o)
+                0x0000000000000383       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-sprintf.o)
  .ARM.attributes
-                0x00000000000003aa       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfprintf.o)
+                0x00000000000003b0       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-strlen-stub.o)
  .ARM.attributes
-                0x00000000000003d7       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__call_atexit.o)
+                0x00000000000003dd       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfprintf.o)
  .ARM.attributes
-                0x0000000000000404       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-atexit.o)
+                0x000000000000040a       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__call_atexit.o)
  .ARM.attributes
-                0x0000000000000431       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-dtoa.o)
+                0x0000000000000437       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-atexit.o)
  .ARM.attributes
-                0x000000000000045e       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-fini.o)
+                0x0000000000000464       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-dtoa.o)
  .ARM.attributes
-                0x000000000000048b       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-freer.o)
+                0x0000000000000491       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-fini.o)
  .ARM.attributes
-                0x00000000000004b8       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-localeconv.o)
+                0x00000000000004be       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-freer.o)
  .ARM.attributes
-                0x00000000000004e5       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
+                0x00000000000004eb       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-localeconv.o)
  .ARM.attributes
-                0x0000000000000512       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mallocr.o)
+                0x0000000000000518       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
  .ARM.attributes
-                0x000000000000053f       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memchr-stub.o)
+                0x0000000000000545       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mallocr.o)
  .ARM.attributes
-                0x000000000000056c       0x1b /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memcpy.o)
+                0x0000000000000572       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memchr-stub.o)
  .ARM.attributes
-                0x0000000000000587       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mlock.o)
+                0x000000000000059f       0x1b /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memcpy.o)
  .ARM.attributes
-                0x00000000000005b4       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+                0x00000000000005ba       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mlock.o)
  .ARM.attributes
-                0x00000000000005e1       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-s_frexp.o)
+                0x00000000000005e7       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
  .ARM.attributes
-                0x000000000000060e       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-sbrkr.o)
+                0x0000000000000614       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-s_frexp.o)
  .ARM.attributes
-                0x000000000000063b       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-strncpy.o)
+                0x0000000000000641       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-sbrkr.o)
  .ARM.attributes
-                0x0000000000000668       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfiprintf.o)
+                0x000000000000066e       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-strncpy.o)
  .ARM.attributes
-                0x0000000000000695       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__atexit.o)
+                0x000000000000069b       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfiprintf.o)
  .ARM.attributes
-                0x00000000000006c2       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-callocr.o)
+                0x00000000000006c8       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__atexit.o)
  .ARM.attributes
-                0x00000000000006ef       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-locale.o)
+                0x00000000000006f5       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-callocr.o)
  .ARM.attributes
-                0x000000000000071c       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mbtowc_r.o)
+                0x0000000000000722       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-locale.o)
  .ARM.attributes
-                0x0000000000000749       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memmove.o)
+                0x000000000000074f       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mbtowc_r.o)
  .ARM.attributes
-                0x0000000000000776       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-reallocr.o)
+                0x000000000000077c       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memmove.o)
  .ARM.attributes
-                0x00000000000007a3       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-reent.o)
+                0x00000000000007a9       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-reallocr.o)
  .ARM.attributes
-                0x00000000000007d0       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-wctomb_r.o)
+                0x00000000000007d6       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-reent.o)
  .ARM.attributes
-                0x00000000000007fd       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-ctype_.o)
+                0x0000000000000803       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-wctomb_r.o)
  .ARM.attributes
-                0x000000000000082a       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_addsubdf3.o)
+                0x0000000000000830       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-ctype_.o)
  .ARM.attributes
-                0x0000000000000847       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_muldivdf3.o)
+                0x000000000000085d       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_addsubdf3.o)
  .ARM.attributes
-                0x0000000000000864       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_cmpdf2.o)
+                0x000000000000087a       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_muldivdf3.o)
  .ARM.attributes
-                0x0000000000000881       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_unorddf2.o)
+                0x0000000000000897       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_cmpdf2.o)
  .ARM.attributes
-                0x000000000000089e       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_fixdfsi.o)
+                0x00000000000008b4       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_unorddf2.o)
  .ARM.attributes
-                0x00000000000008bb       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_aeabi_uldivmod.o)
+                0x00000000000008d1       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_fixdfsi.o)
  .ARM.attributes
-                0x00000000000008d8       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_udivmoddi4.o)
+                0x00000000000008ee       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_aeabi_uldivmod.o)
  .ARM.attributes
-                0x0000000000000905       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_dvmd_tls.o)
+                0x000000000000090b       0x2d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_udivmoddi4.o)
  .ARM.attributes
-                0x0000000000000922       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtn.o
+                0x0000000000000938       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_dvmd_tls.o)
+ .ARM.attributes
+                0x0000000000000955       0x1d /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtn.o
 OUTPUT(Manipulator.elf elf32-littlearm)
 
-.debug_info     0x0000000000000000     0xccc5
+.debug_info     0x0000000000000000     0xe7b7
  .debug_info    0x0000000000000000      0xf0a HAL_Driver/Src/stm32f1xx_hal.o
  .debug_info    0x0000000000000f0a     0x1358 HAL_Driver/Src/stm32f1xx_hal_cortex.o
  .debug_info    0x0000000000002262      0xebd HAL_Driver/Src/stm32f1xx_hal_gpio.o
  .debug_info    0x000000000000311f      0x9c7 HAL_Driver/Src/stm32f1xx_hal_msp_template.o
  .debug_info    0x0000000000003ae6     0x1039 HAL_Driver/Src/stm32f1xx_hal_rcc.o
  .debug_info    0x0000000000004b1f     0x2a25 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .debug_info    0x0000000000007544     0x19f0 HAL_Driver/Src/stm32f1xx_hal_uart.o
- .debug_info    0x0000000000008f34     0x1854 src/main.o
- .debug_info    0x000000000000a788      0x994 src/stm32f1xx_it.o
- .debug_info    0x000000000000b11c      0xf2e src/syscalls.o
- .debug_info    0x000000000000c04a      0xc59 src/system_stm32f1xx.o
- .debug_info    0x000000000000cca3       0x22 startup/startup_stm32f103xb.o
+ .debug_info    0x0000000000007544     0x17d5 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
+ .debug_info    0x0000000000008d19     0x19f0 HAL_Driver/Src/stm32f1xx_hal_uart.o
+ .debug_info    0x000000000000a709     0x1b71 src/main.o
+ .debug_info    0x000000000000c27a      0x994 src/stm32f1xx_it.o
+ .debug_info    0x000000000000cc0e      0xf2e src/syscalls.o
+ .debug_info    0x000000000000db3c      0xc59 src/system_stm32f1xx.o
+ .debug_info    0x000000000000e795       0x22 startup/startup_stm32f103xb.o
 
-.debug_abbrev   0x0000000000000000     0x1db2
+.debug_abbrev   0x0000000000000000     0x20e1
  .debug_abbrev  0x0000000000000000      0x2f5 HAL_Driver/Src/stm32f1xx_hal.o
  .debug_abbrev  0x00000000000002f5      0x396 HAL_Driver/Src/stm32f1xx_hal_cortex.o
  .debug_abbrev  0x000000000000068b      0x289 HAL_Driver/Src/stm32f1xx_hal_gpio.o
  .debug_abbrev  0x0000000000000914      0x1cb HAL_Driver/Src/stm32f1xx_hal_msp_template.o
  .debug_abbrev  0x0000000000000adf      0x323 HAL_Driver/Src/stm32f1xx_hal_rcc.o
  .debug_abbrev  0x0000000000000e02      0x2ea HAL_Driver/Src/stm32f1xx_hal_tim.o
- .debug_abbrev  0x00000000000010ec      0x2eb HAL_Driver/Src/stm32f1xx_hal_uart.o
- .debug_abbrev  0x00000000000013d7      0x32c src/main.o
- .debug_abbrev  0x0000000000001703      0x1cb src/stm32f1xx_it.o
- .debug_abbrev  0x00000000000018ce      0x2aa src/syscalls.o
- .debug_abbrev  0x0000000000001b78      0x228 src/system_stm32f1xx.o
- .debug_abbrev  0x0000000000001da0       0x12 startup/startup_stm32f103xb.o
+ .debug_abbrev  0x00000000000010ec      0x2c7 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
+ .debug_abbrev  0x00000000000013b3      0x2eb HAL_Driver/Src/stm32f1xx_hal_uart.o
+ .debug_abbrev  0x000000000000169e      0x394 src/main.o
+ .debug_abbrev  0x0000000000001a32      0x1cb src/stm32f1xx_it.o
+ .debug_abbrev  0x0000000000001bfd      0x2aa src/syscalls.o
+ .debug_abbrev  0x0000000000001ea7      0x228 src/system_stm32f1xx.o
+ .debug_abbrev  0x00000000000020cf       0x12 startup/startup_stm32f103xb.o
 
-.debug_aranges  0x0000000000000000      0x9d0
+.debug_aranges  0x0000000000000000      0xb58
  .debug_aranges
                 0x0000000000000000       0xd0 HAL_Driver/Src/stm32f1xx_hal.o
  .debug_aranges
@@ -10478,33 +10528,36 @@ OUTPUT(Manipulator.elf elf32-littlearm)
  .debug_aranges
                 0x00000000000002f0      0x368 HAL_Driver/Src/stm32f1xx_hal_tim.o
  .debug_aranges
-                0x0000000000000658      0x1d0 HAL_Driver/Src/stm32f1xx_hal_uart.o
+                0x0000000000000658      0x138 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
  .debug_aranges
-                0x0000000000000828       0x88 src/main.o
+                0x0000000000000790      0x1d0 HAL_Driver/Src/stm32f1xx_hal_uart.o
  .debug_aranges
-                0x00000000000008b0       0x20 src/stm32f1xx_it.o
+                0x0000000000000960       0xd8 src/main.o
  .debug_aranges
-                0x00000000000008d0       0xb0 src/syscalls.o
+                0x0000000000000a38       0x20 src/stm32f1xx_it.o
  .debug_aranges
-                0x0000000000000980       0x28 src/system_stm32f1xx.o
+                0x0000000000000a58       0xb0 src/syscalls.o
  .debug_aranges
-                0x00000000000009a8       0x28 startup/startup_stm32f103xb.o
+                0x0000000000000b08       0x28 src/system_stm32f1xx.o
+ .debug_aranges
+                0x0000000000000b30       0x28 startup/startup_stm32f103xb.o
 
-.debug_ranges   0x0000000000000000      0x918
+.debug_ranges   0x0000000000000000      0xa90
  .debug_ranges  0x0000000000000000       0xc0 HAL_Driver/Src/stm32f1xx_hal.o
  .debug_ranges  0x00000000000000c0       0xf0 HAL_Driver/Src/stm32f1xx_hal_cortex.o
  .debug_ranges  0x00000000000001b0       0x48 HAL_Driver/Src/stm32f1xx_hal_gpio.o
  .debug_ranges  0x00000000000001f8       0x28 HAL_Driver/Src/stm32f1xx_hal_msp_template.o
  .debug_ranges  0x0000000000000220       0x80 HAL_Driver/Src/stm32f1xx_hal_rcc.o
  .debug_ranges  0x00000000000002a0      0x358 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .debug_ranges  0x00000000000005f8      0x1c0 HAL_Driver/Src/stm32f1xx_hal_uart.o
- .debug_ranges  0x00000000000007b8       0x78 src/main.o
- .debug_ranges  0x0000000000000830       0x10 src/stm32f1xx_it.o
- .debug_ranges  0x0000000000000840       0xa0 src/syscalls.o
- .debug_ranges  0x00000000000008e0       0x18 src/system_stm32f1xx.o
- .debug_ranges  0x00000000000008f8       0x20 startup/startup_stm32f103xb.o
+ .debug_ranges  0x00000000000005f8      0x128 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
+ .debug_ranges  0x0000000000000720      0x1c0 HAL_Driver/Src/stm32f1xx_hal_uart.o
+ .debug_ranges  0x00000000000008e0       0xc8 src/main.o
+ .debug_ranges  0x00000000000009a8       0x10 src/stm32f1xx_it.o
+ .debug_ranges  0x00000000000009b8       0xa0 src/syscalls.o
+ .debug_ranges  0x0000000000000a58       0x18 src/system_stm32f1xx.o
+ .debug_ranges  0x0000000000000a70       0x20 startup/startup_stm32f103xb.o
 
-.debug_macro    0x0000000000000000    0x18271
+.debug_macro    0x0000000000000000    0x18673
  .debug_macro   0x0000000000000000      0x426 HAL_Driver/Src/stm32f1xx_hal.o
  .debug_macro   0x0000000000000426      0xa72 HAL_Driver/Src/stm32f1xx_hal.o
  .debug_macro   0x0000000000000e98      0x224 HAL_Driver/Src/stm32f1xx_hal.o
@@ -10584,71 +10637,75 @@ OUTPUT(Manipulator.elf elf32-littlearm)
  .debug_macro   0x0000000000015a16      0x402 HAL_Driver/Src/stm32f1xx_hal_msp_template.o
  .debug_macro   0x0000000000015e18      0x414 HAL_Driver/Src/stm32f1xx_hal_rcc.o
  .debug_macro   0x000000000001622c      0x402 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .debug_macro   0x000000000001662e      0x403 HAL_Driver/Src/stm32f1xx_hal_uart.o
- .debug_macro   0x0000000000016a31      0x46d src/main.o
- .debug_macro   0x0000000000016e9e       0x58 src/main.o
- .debug_macro   0x0000000000016ef6       0x94 src/main.o
- .debug_macro   0x0000000000016f8a      0x174 src/main.o
- .debug_macro   0x00000000000170fe       0x57 src/main.o
- .debug_macro   0x0000000000017155       0x10 src/main.o
- .debug_macro   0x0000000000017165       0x35 src/main.o
- .debug_macro   0x000000000001719a       0x1c src/main.o
- .debug_macro   0x00000000000171b6       0x16 src/main.o
- .debug_macro   0x00000000000171cc       0x16 src/main.o
- .debug_macro   0x00000000000171e2       0x29 src/main.o
- .debug_macro   0x000000000001720b      0x40c src/stm32f1xx_it.o
- .debug_macro   0x0000000000017617      0x243 src/syscalls.o
- .debug_macro   0x000000000001785a       0x10 src/syscalls.o
- .debug_macro   0x000000000001786a       0x10 src/syscalls.o
- .debug_macro   0x000000000001787a       0x10 src/syscalls.o
- .debug_macro   0x000000000001788a       0x35 src/syscalls.o
- .debug_macro   0x00000000000178bf      0x122 src/syscalls.o
- .debug_macro   0x00000000000179e1       0x10 src/syscalls.o
- .debug_macro   0x00000000000179f1      0x241 src/syscalls.o
- .debug_macro   0x0000000000017c32       0x10 src/syscalls.o
- .debug_macro   0x0000000000017c42      0x189 src/syscalls.o
- .debug_macro   0x0000000000017dcb       0x16 src/syscalls.o
- .debug_macro   0x0000000000017de1       0x88 src/syscalls.o
- .debug_macro   0x0000000000017e69      0x408 src/system_stm32f1xx.o
+ .debug_macro   0x000000000001662e      0x402 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
+ .debug_macro   0x0000000000016a30      0x403 HAL_Driver/Src/stm32f1xx_hal_uart.o
+ .debug_macro   0x0000000000016e33      0x46d src/main.o
+ .debug_macro   0x00000000000172a0       0x58 src/main.o
+ .debug_macro   0x00000000000172f8       0x94 src/main.o
+ .debug_macro   0x000000000001738c      0x174 src/main.o
+ .debug_macro   0x0000000000017500       0x57 src/main.o
+ .debug_macro   0x0000000000017557       0x10 src/main.o
+ .debug_macro   0x0000000000017567       0x35 src/main.o
+ .debug_macro   0x000000000001759c       0x1c src/main.o
+ .debug_macro   0x00000000000175b8       0x16 src/main.o
+ .debug_macro   0x00000000000175ce       0x16 src/main.o
+ .debug_macro   0x00000000000175e4       0x29 src/main.o
+ .debug_macro   0x000000000001760d      0x40c src/stm32f1xx_it.o
+ .debug_macro   0x0000000000017a19      0x243 src/syscalls.o
+ .debug_macro   0x0000000000017c5c       0x10 src/syscalls.o
+ .debug_macro   0x0000000000017c6c       0x10 src/syscalls.o
+ .debug_macro   0x0000000000017c7c       0x10 src/syscalls.o
+ .debug_macro   0x0000000000017c8c       0x35 src/syscalls.o
+ .debug_macro   0x0000000000017cc1      0x122 src/syscalls.o
+ .debug_macro   0x0000000000017de3       0x10 src/syscalls.o
+ .debug_macro   0x0000000000017df3      0x241 src/syscalls.o
+ .debug_macro   0x0000000000018034       0x10 src/syscalls.o
+ .debug_macro   0x0000000000018044      0x189 src/syscalls.o
+ .debug_macro   0x00000000000181cd       0x16 src/syscalls.o
+ .debug_macro   0x00000000000181e3       0x88 src/syscalls.o
+ .debug_macro   0x000000000001826b      0x408 src/system_stm32f1xx.o
 
-.debug_line     0x0000000000000000     0x859e
+.debug_line     0x0000000000000000     0x960c
  .debug_line    0x0000000000000000      0xacf HAL_Driver/Src/stm32f1xx_hal.o
  .debug_line    0x0000000000000acf      0xbbd HAL_Driver/Src/stm32f1xx_hal_cortex.o
  .debug_line    0x000000000000168c      0xb07 HAL_Driver/Src/stm32f1xx_hal_gpio.o
  .debug_line    0x0000000000002193      0x961 HAL_Driver/Src/stm32f1xx_hal_msp_template.o
  .debug_line    0x0000000000002af4      0xbb9 HAL_Driver/Src/stm32f1xx_hal_rcc.o
- .debug_line    0x00000000000036ad     0x1899 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .debug_line    0x0000000000004f46     0x11e0 HAL_Driver/Src/stm32f1xx_hal_uart.o
- .debug_line    0x0000000000006126      0xb67 src/main.o
- .debug_line    0x0000000000006c8d      0x952 src/stm32f1xx_it.o
- .debug_line    0x00000000000075df      0x5eb src/syscalls.o
- .debug_line    0x0000000000007bca      0x957 src/system_stm32f1xx.o
- .debug_line    0x0000000000008521       0x7d startup/startup_stm32f103xb.o
+ .debug_line    0x00000000000036ad     0x1898 HAL_Driver/Src/stm32f1xx_hal_tim.o
+ .debug_line    0x0000000000004f45      0xe8c HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
+ .debug_line    0x0000000000005dd1     0x11e0 HAL_Driver/Src/stm32f1xx_hal_uart.o
+ .debug_line    0x0000000000006fb1      0xd4a src/main.o
+ .debug_line    0x0000000000007cfb      0x952 src/stm32f1xx_it.o
+ .debug_line    0x000000000000864d      0x5eb src/syscalls.o
+ .debug_line    0x0000000000008c38      0x957 src/system_stm32f1xx.o
+ .debug_line    0x000000000000958f       0x7d startup/startup_stm32f103xb.o
 
-.debug_str      0x0000000000000000    0x846f0
+.debug_str      0x0000000000000000    0x84cc2
  .debug_str     0x0000000000000000    0x8107d HAL_Driver/Src/stm32f1xx_hal.o
                                       0x8141e (size before relaxing)
  .debug_str     0x000000000008107d      0x314 HAL_Driver/Src/stm32f1xx_hal_cortex.o
                                       0x81432 (size before relaxing)
- .debug_str     0x0000000000081391      0x39e HAL_Driver/Src/stm32f1xx_hal_gpio.o
+ .debug_str     0x0000000000081391      0x397 HAL_Driver/Src/stm32f1xx_hal_gpio.o
                                       0x81179 (size before relaxing)
- .debug_str     0x000000000008172f       0x51 HAL_Driver/Src/stm32f1xx_hal_msp_template.o
+ .debug_str     0x0000000000081728       0x51 HAL_Driver/Src/stm32f1xx_hal_msp_template.o
                                       0x80d95 (size before relaxing)
- .debug_str     0x0000000000081780      0x356 HAL_Driver/Src/stm32f1xx_hal_rcc.o
+ .debug_str     0x0000000000081779      0x356 HAL_Driver/Src/stm32f1xx_hal_rcc.o
                                       0x811a7 (size before relaxing)
- .debug_str     0x0000000000081ad6     0x1086 HAL_Driver/Src/stm32f1xx_hal_tim.o
+ .debug_str     0x0000000000081acf     0x107c HAL_Driver/Src/stm32f1xx_hal_tim.o
                                       0x81e79 (size before relaxing)
- .debug_str     0x0000000000082b5c      0x6c4 HAL_Driver/Src/stm32f1xx_hal_uart.o
+ .debug_str     0x0000000000082b4b      0x515 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
+                                      0x81716 (size before relaxing)
+ .debug_str     0x0000000000083060      0x6c4 HAL_Driver/Src/stm32f1xx_hal_uart.o
                                       0x81681 (size before relaxing)
- .debug_str     0x0000000000083220      0x2ff src/main.o
-                                      0x819c9 (size before relaxing)
- .debug_str     0x000000000008351f       0x38 src/stm32f1xx_it.o
+ .debug_str     0x0000000000083724      0x3cd src/main.o
+                                      0x81ae7 (size before relaxing)
+ .debug_str     0x0000000000083af1       0x38 src/stm32f1xx_it.o
                                       0x80d62 (size before relaxing)
- .debug_str     0x0000000000083557     0x1109 src/syscalls.o
+ .debug_str     0x0000000000083b29     0x1109 src/syscalls.o
                                        0x8579 (size before relaxing)
- .debug_str     0x0000000000084660       0x61 src/system_stm32f1xx.o
+ .debug_str     0x0000000000084c32       0x61 src/system_stm32f1xx.o
                                       0x80e2e (size before relaxing)
- .debug_str     0x00000000000846c1       0x2f startup/startup_stm32f103xb.o
+ .debug_str     0x0000000000084c93       0x2f startup/startup_stm32f103xb.o
                                          0x5b (size before relaxing)
 
 .comment        0x0000000000000000       0x7f
@@ -10659,57 +10716,59 @@ OUTPUT(Manipulator.elf elf32-littlearm)
  .comment       0x000000000000007f       0x80 HAL_Driver/Src/stm32f1xx_hal_msp_template.o
  .comment       0x000000000000007f       0x80 HAL_Driver/Src/stm32f1xx_hal_rcc.o
  .comment       0x000000000000007f       0x80 HAL_Driver/Src/stm32f1xx_hal_tim.o
+ .comment       0x000000000000007f       0x80 HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
  .comment       0x000000000000007f       0x80 HAL_Driver/Src/stm32f1xx_hal_uart.o
  .comment       0x000000000000007f       0x80 src/main.o
  .comment       0x000000000000007f       0x80 src/stm32f1xx_it.o
  .comment       0x000000000000007f       0x80 src/syscalls.o
  .comment       0x000000000000007f       0x80 src/system_stm32f1xx.o
 
-.debug_frame    0x0000000000000000     0x3504
+.debug_frame    0x0000000000000000     0x3bac
  .debug_frame   0x0000000000000000      0x2fc HAL_Driver/Src/stm32f1xx_hal.o
  .debug_frame   0x00000000000002fc      0x428 HAL_Driver/Src/stm32f1xx_hal_cortex.o
  .debug_frame   0x0000000000000724      0x14c HAL_Driver/Src/stm32f1xx_hal_gpio.o
  .debug_frame   0x0000000000000870       0x90 HAL_Driver/Src/stm32f1xx_hal_msp_template.o
  .debug_frame   0x0000000000000900      0x21c HAL_Driver/Src/stm32f1xx_hal_rcc.o
  .debug_frame   0x0000000000000b1c      0xfb4 HAL_Driver/Src/stm32f1xx_hal_tim.o
- .debug_frame   0x0000000000001ad0      0x83c HAL_Driver/Src/stm32f1xx_hal_uart.o
- .debug_frame   0x000000000000230c      0x1cc src/main.o
- .debug_frame   0x00000000000024d8       0x2c src/stm32f1xx_it.o
- .debug_frame   0x0000000000002504      0x2d0 src/syscalls.o
- .debug_frame   0x00000000000027d4       0x58 src/system_stm32f1xx.o
- .debug_frame   0x000000000000282c       0x20 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-errno.o)
- .debug_frame   0x000000000000284c       0x2c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-init.o)
- .debug_frame   0x0000000000002878       0x38 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memset.o)
- .debug_frame   0x00000000000028b0       0x80 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-sprintf.o)
- .debug_frame   0x0000000000002930       0x20 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-strlen-stub.o)
- .debug_frame   0x0000000000002950       0x40 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfprintf.o)
- .debug_frame   0x0000000000002990       0x5c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__call_atexit.o)
- .debug_frame   0x00000000000029ec       0x20 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-atexit.o)
- .debug_frame   0x0000000000002a0c       0x88 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-dtoa.o)
- .debug_frame   0x0000000000002a94       0x34 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-fini.o)
- .debug_frame   0x0000000000002ac8       0x80 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-freer.o)
- .debug_frame   0x0000000000002b48       0x40 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-localeconv.o)
- .debug_frame   0x0000000000002b88       0xb0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
- .debug_frame   0x0000000000002c38       0x4c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mallocr.o)
- .debug_frame   0x0000000000002c84       0x34 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memchr-stub.o)
- .debug_frame   0x0000000000002cb8       0x30 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mlock.o)
- .debug_frame   0x0000000000002ce8      0x264 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
- .debug_frame   0x0000000000002f4c       0x30 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-s_frexp.o)
- .debug_frame   0x0000000000002f7c       0x2c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-sbrkr.o)
- .debug_frame   0x0000000000002fa8       0x34 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-strncpy.o)
- .debug_frame   0x0000000000002fdc       0x74 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfiprintf.o)
- .debug_frame   0x0000000000003050       0x34 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__atexit.o)
- .debug_frame   0x0000000000003084       0x28 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-callocr.o)
- .debug_frame   0x00000000000030ac       0x6c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-locale.o)
- .debug_frame   0x0000000000003118       0x4c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mbtowc_r.o)
- .debug_frame   0x0000000000003164       0x40 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memmove.o)
- .debug_frame   0x00000000000031a4       0x58 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-reallocr.o)
- .debug_frame   0x00000000000031fc       0x68 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-reent.o)
- .debug_frame   0x0000000000003264       0x3c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-wctomb_r.o)
- .debug_frame   0x00000000000032a0       0xac /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_addsubdf3.o)
- .debug_frame   0x000000000000334c       0x50 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_muldivdf3.o)
- .debug_frame   0x000000000000339c       0xc4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_cmpdf2.o)
- .debug_frame   0x0000000000003460       0x20 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_unorddf2.o)
- .debug_frame   0x0000000000003480       0x24 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_fixdfsi.o)
- .debug_frame   0x00000000000034a4       0x2c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_aeabi_uldivmod.o)
- .debug_frame   0x00000000000034d0       0x34 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_udivmoddi4.o)
+ .debug_frame   0x0000000000001ad0      0x54c HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
+ .debug_frame   0x000000000000201c      0x83c HAL_Driver/Src/stm32f1xx_hal_uart.o
+ .debug_frame   0x0000000000002858      0x328 src/main.o
+ .debug_frame   0x0000000000002b80       0x2c src/stm32f1xx_it.o
+ .debug_frame   0x0000000000002bac      0x2d0 src/syscalls.o
+ .debug_frame   0x0000000000002e7c       0x58 src/system_stm32f1xx.o
+ .debug_frame   0x0000000000002ed4       0x20 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-errno.o)
+ .debug_frame   0x0000000000002ef4       0x2c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-init.o)
+ .debug_frame   0x0000000000002f20       0x38 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memset.o)
+ .debug_frame   0x0000000000002f58       0x80 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-sprintf.o)
+ .debug_frame   0x0000000000002fd8       0x20 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-strlen-stub.o)
+ .debug_frame   0x0000000000002ff8       0x40 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfprintf.o)
+ .debug_frame   0x0000000000003038       0x5c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__call_atexit.o)
+ .debug_frame   0x0000000000003094       0x20 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-atexit.o)
+ .debug_frame   0x00000000000030b4       0x88 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-dtoa.o)
+ .debug_frame   0x000000000000313c       0x34 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-fini.o)
+ .debug_frame   0x0000000000003170       0x80 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-freer.o)
+ .debug_frame   0x00000000000031f0       0x40 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-localeconv.o)
+ .debug_frame   0x0000000000003230       0xb0 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-lock.o)
+ .debug_frame   0x00000000000032e0       0x4c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mallocr.o)
+ .debug_frame   0x000000000000332c       0x34 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memchr-stub.o)
+ .debug_frame   0x0000000000003360       0x30 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mlock.o)
+ .debug_frame   0x0000000000003390      0x264 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mprec.o)
+ .debug_frame   0x00000000000035f4       0x30 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-s_frexp.o)
+ .debug_frame   0x0000000000003624       0x2c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-sbrkr.o)
+ .debug_frame   0x0000000000003650       0x34 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-strncpy.o)
+ .debug_frame   0x0000000000003684       0x74 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-svfiprintf.o)
+ .debug_frame   0x00000000000036f8       0x34 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-__atexit.o)
+ .debug_frame   0x000000000000372c       0x28 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-callocr.o)
+ .debug_frame   0x0000000000003754       0x6c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-locale.o)
+ .debug_frame   0x00000000000037c0       0x4c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-mbtowc_r.o)
+ .debug_frame   0x000000000000380c       0x40 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-memmove.o)
+ .debug_frame   0x000000000000384c       0x58 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-reallocr.o)
+ .debug_frame   0x00000000000038a4       0x68 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-reent.o)
+ .debug_frame   0x000000000000390c       0x3c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/libc.a(lib_a-wctomb_r.o)
+ .debug_frame   0x0000000000003948       0xac /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_addsubdf3.o)
+ .debug_frame   0x00000000000039f4       0x50 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_muldivdf3.o)
+ .debug_frame   0x0000000000003a44       0xc4 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_cmpdf2.o)
+ .debug_frame   0x0000000000003b08       0x20 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_unorddf2.o)
+ .debug_frame   0x0000000000003b28       0x24 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_arm_fixdfsi.o)
+ .debug_frame   0x0000000000003b4c       0x2c /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_aeabi_uldivmod.o)
+ .debug_frame   0x0000000000003b78       0x34 /home/kwarc/Downloads/1/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/libgcc.a(_udivmoddi4.o)
