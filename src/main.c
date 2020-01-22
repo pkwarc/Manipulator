@@ -34,6 +34,17 @@ typedef enum {
 	STOP
 } Direction;
 
+typedef enum {
+	BTN_NONE,
+	BTN_S1,
+	BTN_S2,
+	BTN_CLK,
+	BTN_ANT,
+	BTN_F1,
+	BTN_F2,
+	BTN_U
+} BIntr;
+
 typedef struct move {
     int32_t rotation;
     Direction direction;
@@ -43,6 +54,7 @@ typedef struct move {
 TIM_HandleTypeDef timer;
 TIM_HandleTypeDef timer_FI2;
 TIM_HandleTypeDef timer_U;
+TIM_HandleTypeDef debounceTimer;
 
 TIM_Encoder_InitTypeDef encoder;
 TIM_Encoder_InitTypeDef encoder_FI2;
@@ -60,21 +72,20 @@ void start_position();
 void rotate(Move m);
 void start_axis(Move move);
 void stop_axis(Move move);
-int get_axis_rotation(Axis axis);
+uint32_t get_axis_rotation(Axis axis);
 void set_axis_rotation(Axis axis, int value);
 void manipulator_config();
 
 
 // volatile must be applied because the variable is changed during the interrupt routine
 volatile int in_move = FALSE;
-
-
 volatile int start_move = FALSE;
 volatile int register_move = FALSE;
 volatile int was_test_performed = FALSE;
 
 volatile int move_index = 0;
 volatile Move current_move;
+volatile BIntr last_button_pushed = BTN_NONE;
 
 int32_t abs_val(int32_t a)
 {
@@ -90,6 +101,41 @@ void send_string(char* s)
 	HAL_UART_Transmit(&uart, (uint8_t*)s, strlen(s), 1000);
 }
 
+void TIM4_IRQHandler(void)
+{
+	HAL_TIM_IRQHandler(&debounceTimer);
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	HAL_TIM_Base_Stop(&debounceTimer);
+	if (last_button_pushed == BTN_CLK) {
+
+	} else if (last_button_pushed == BTN_ANT) {
+
+	} else if (last_button_pushed == BTN_F1) {
+		f1_button_pushed();
+	} else if (last_button_pushed == BTN_F2) {
+
+	} else if (last_button_pushed == BTN_U) {
+
+	} else if (last_button_pushed == BTN_S1) {
+
+	} else if (last_button_pushed == BTN_S2) {
+
+	}
+
+	// reset the timer value
+	TIM4->CNT = 0;
+}
+
+void f1_button_pushed() {
+	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_4) == GPIO_PIN_RESET)
+	{
+		send_string("AXIS F1 ON\n");
+		current_move.axis = F1;
+	}
+}
 
 void F1_start_clk() {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
@@ -311,7 +357,7 @@ void rotate(Move m)
 
 		sprintf(message, "Zostalo: %d\n", m.rotation - total);
 		send_string(message);
-		HAL_Delay(50);
+		HAL_Delay(42.5);
 	}
     stop_axis(m);
 }
@@ -372,15 +418,15 @@ void stop_axis(Move move)
 }
 
 
-int get_axis_rotation(Axis axis)
+uint32_t get_axis_rotation(Axis axis)
 {
 	if (axis == F1)
 	{
-		return TIM2->CNT;
+		return TIM1->CNT;
 	}
 	else if (axis == F2)
 	{
-		return TIM1->CNT;
+		return TIM2->CNT;
 	}
 	else if (axis == U)
 	{
@@ -407,6 +453,101 @@ void set_axis_rotation(Axis axis, int value)
 }
 
 
+void EXTI0_IRQHandler()
+{
+	send_string("S1 ON\n");
+	send_string("Register movement start..\n");
+
+	move_index = 0;
+
+	register_move = !register_move;
+	send_string(register_move ? "TRUE\n" : "FALSE\n");
+
+	last_button_pushed = BTN_S1;
+	HAL_TIM_Base_Start(&debounceTimer);
+
+	EXTI->PR = EXTI_PR_PR0;
+}
+
+void EXTI1_IRQHandler()
+{
+	send_string("S2 ON\n");
+	send_string("Manipulator movement start..\n");
+
+	start_move = !start_move;
+
+	send_string(start_move ? "TRUE\n" : "FALSE\n");
+
+	last_button_pushed = BTN_S2;
+	HAL_TIM_Base_Start(&debounceTimer);
+
+	EXTI->PR = EXTI_PR_PR1;
+}
+
+void EXTI2_IRQHandler()
+{
+	send_string("JOYSTICK FORWARD ON\n");
+	send_string("CLOCKWISE! START\n");
+
+	current_move.direction = CLOCKWISE;
+	in_move = TRUE;
+
+	last_button_pushed = BTN_CLK;
+	HAL_TIM_Base_Start(&debounceTimer);
+
+	EXTI->PR = EXTI_PR_PR2;
+}
+
+void EXTI3_IRQHandler()
+{
+	send_string("JOYSTICK BACKWARD ON\n");
+	send_string("ANTICLOCKWISE! START\n");
+
+	current_move.direction = ANTICLOCKWISE;
+	in_move = TRUE;
+
+	last_button_pushed = BTN_ANT;
+	HAL_TIM_Base_Start(&debounceTimer);
+
+	EXTI->PR = EXTI_PR_PR3;
+}
+
+void EXTI4_IRQHandler()
+{
+	send_string("AXIS F1 ON\n");
+	current_move.axis = F1;
+
+	last_button_pushed = BTN_F1;
+	HAL_TIM_Base_Start(&debounceTimer);
+
+	EXTI->PR = EXTI_PR_PR4;
+}
+
+void EXTI9_5_IRQHandler()
+{
+	if (EXTI->PR & EXTI_PR_PR5)
+	{
+		send_string("AXIS F2 ON\n");
+
+		current_move.axis = F2;
+
+		last_button_pushed = BTN_F2;
+		HAL_TIM_Base_Start(&debounceTimer);
+	}
+	else if (EXTI->PR & EXTI_PR_PR6)
+	{
+		send_string("AXIS U ON\n");
+
+		current_move.axis = U;
+
+		last_button_pushed = BTN_U;
+		HAL_TIM_Base_Start(&debounceTimer);
+	}
+
+	EXTI->PR = EXTI_PR_PR5;
+	EXTI->PR = EXTI_PR_PR6;
+}
+
 // BUTTON S PB0
 // BUTTON T PB1
 // JOYSTICK FORWARD PB2
@@ -414,7 +555,7 @@ void set_axis_rotation(Axis axis, int value)
 // AXIS F1 BUTTON PB4
 // AXIS F2 BUTTON PB5
 // AXIS U BUTTON PB6
-void HAL_SYSTICK_Callback(void)
+void check_input_status(void)
 {
 	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0) == GPIO_PIN_RESET)
 	{
@@ -454,7 +595,7 @@ void HAL_SYSTICK_Callback(void)
 		send_string("JOYSTICK MIDDLE POSITION\n");
 		send_string("STPOP MOVE \n");
 
-		was_test_performed = FALSE;
+//		was_test_performed = FALSE;
 		in_move = FALSE;
 	}
 	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_4) == GPIO_PIN_RESET)
@@ -478,12 +619,6 @@ void HAL_SYSTICK_Callback(void)
 }
 
 
-void TIM2_IRQHandler()
-{
-	send_string("clock interrupt\n");
-	TIM2->SR &= ~TIM_SR_UIF;
-}
-
 void print_moves()
 {
 	if (move_index== 0)
@@ -502,15 +637,15 @@ void print_moves()
 
 // TIM1 PIN PA8 PA9 FI_1
 // TIM2 PIN PA0 PA1 FI_2
-// TIM3 PIN PA6 PA7
+// TIM3 PIN PA6 PA7 U
 // TIM4 PIN PB6 PB7
 
 // F1 PINS: PA10, PA11, PA12, PA13, PA14, PA15
 // F2 PINS: PC10, PC11, PC12, PC13, PC14, PC15
 // U  PINS: PB10, PB11, PB12, PB13, PB14, PB15
 
-// BUTTON S PB0
-// BUTTON T PB1
+// BUTTON S1 PB0
+// BUTON S2 PB1
 // JOYSTICK FORWARD PB2
 // JOYSTICK BACKWARD PC3
 // AXIS F1 BUTTON PB4
@@ -546,10 +681,34 @@ int main(void)
 	F2_stop();
 	U_stop();
 
+//
+//	Move test_axis;
+//	test_axis.axis = F1;
+
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, SET);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, SET);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_2, SET);
 	while(1)
 	{
+		check_input_status();
+//		sprintf(message, "T1 = %d\n", TIM1->CNT);
+//		send_string(message);
+//		sprintf(message, "T2 = %d\n", TIM2->CNT);
+//		send_string(message);
+//		sprintf(message, "T3 = %d\n", TIM3->CNT);
+//						send_string(message);
+//						int32_t diff = get_axis_rotation(test_axis.axis) - old_val;
+//						if (diff < 3000 && diff > -3000)
+//							total += abs_val(diff);
+//
+//						sprintf(message, "diff = %d\n", diff);
+//						send_string(message);
+//						sprintf(message, "Sum: %d\n", total);
+//						send_string(message);
+//						old_val = get_axis_rotation(test_axis.axis);
+//						HAL_Delay(42.5);
 		/* rejestracja ruchu */
-		while (register_move)
+		while (register_move && !start_move)
 		{
 			if (in_move)
 			{
@@ -566,7 +725,7 @@ int main(void)
 				sprintf(message, "Sum: %d\n", total);
 				send_string(message);
 				old_val = get_axis_rotation(current_move.axis);
-				HAL_Delay(50);
+				HAL_Delay(42.5);
 			}
 			if (!in_move)
 			{
@@ -588,13 +747,13 @@ int main(void)
 		}
 
 		/* odtwarzanie ruchu */
-		while (start_move)
+		while (start_move && !register_move)
 		{
 			begin_movement();
 		}
 
 		/* ruch testowy */
-		while (start_move && register_move && was_test_performed)
+		while (start_move && register_move && !was_test_performed)
 		{
 			was_test_performed = TRUE;
 
@@ -603,7 +762,7 @@ int main(void)
 			Move u_move;
 
 			f1_move.direction = f2_move.direction = u_move.direction = CLOCKWISE;
-			f1_move.rotation = f2_move.rotation = u_move.rotation = 500;
+			f1_move.rotation = f2_move.rotation = u_move.rotation = 1000;
 			f2_move.axis = F2;
 			u_move.axis = U;
 			f1_move.axis = F1;
@@ -613,9 +772,10 @@ int main(void)
 			rotate(u_move);
 
 			f1_move.direction = f2_move.direction = u_move.direction = ANTICLOCKWISE;
-			rotate(f1_move);
-			rotate(f2_move);
 			rotate(u_move);
+			rotate(f2_move);
+			rotate(f1_move);
+
 		}
 	}
 }
@@ -636,7 +796,7 @@ void manipulator_config()
 	 __HAL_RCC_AFIO_CLK_ENABLE();
 	__HAL_AFIO_REMAP_SWJ_DISABLE();
 
-	SysTick_Config(400000);
+//	SysTick_Config(800000);
 
 	GPIO_InitTypeDef gpio;
 
@@ -694,12 +854,12 @@ void manipulator_config()
 	gpio_joystick.Pull = GPIO_PULLUP;
 	HAL_GPIO_Init(GPIOB, &gpio_joystick);
 
-//	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
-//	HAL_NVIC_EnableIRQ(EXTI1_IRQn);
-//	HAL_NVIC_EnableIRQ(EXTI2_IRQn);
-//	HAL_NVIC_EnableIRQ(EXTI3_IRQn);
-//	HAL_NVIC_EnableIRQ(EXTI4_IRQn);
-//	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+	HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+	HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+	HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+	HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 	// GPIO B
 
 
@@ -829,6 +989,33 @@ void manipulator_config()
 	TIM3->EGR = 1;           // Generate an update event
 	TIM3->CR1 = 1;           // Enable the counter
 	// ENCODER U
+
+	/*
+	 * Timer for debouncing
+	 *
+	 * This timer counts to 50ms every time a button interrupt is called.
+	 * After 50ms the button state is checked and the result is assigned
+	 * to the variable related to this button state.
+	 */
+
+
+	__HAL_RCC_TIM4_CLK_ENABLE();
+	debounceTimer.Instance = TIM4;
+	debounceTimer.Init.Period = 50 - 1;
+	debounceTimer.Init.Prescaler = 8000 - 1;
+	debounceTimer.Init.ClockDivision = 0;
+	debounceTimer.Init.CounterMode = TIM_COUNTERMODE_UP;
+	debounceTimer.Init.RepetitionCounter = 0;
+	debounceTimer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+	HAL_TIM_Base_Init(&debounceTimer);
+
+	HAL_NVIC_EnableIRQ(TIM4_IRQn);
+	HAL_TIM_Base_Start_IT(&debounceTimer);
+
+	// same as TIMx->CR1 |= value
+	HAL_TIM_Base_Stop(&debounceTimer);
+
+	// debounceTimer
 
 	// UART
 	__HAL_RCC_USART2_CLK_ENABLE();
