@@ -110,21 +110,20 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	HAL_TIM_Base_Stop(&debounceTimer);
 	if (last_button_pushed == BTN_CLK) {
-
+		clk_button_pushed();
 	} else if (last_button_pushed == BTN_ANT) {
-
+		ant_button_pushed();
 	} else if (last_button_pushed == BTN_F1) {
 		f1_button_pushed();
 	} else if (last_button_pushed == BTN_F2) {
-
+		f2_button_pushed();
 	} else if (last_button_pushed == BTN_U) {
-
+		u_button_pushed();
 	} else if (last_button_pushed == BTN_S1) {
-
+		s1_button_pushed();
 	} else if (last_button_pushed == BTN_S2) {
-
+		s2_button_pushed();
 	}
-
 	// reset the timer value
 	TIM4->CNT = 0;
 }
@@ -136,6 +135,93 @@ void f1_button_pushed() {
 		current_move.axis = F1;
 	}
 }
+
+void s1_button_pushed(void)
+{
+	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0) == GPIO_PIN_RESET)
+	{
+		send_string("S1 ON\n");
+		send_string("Register movement start..\n");
+
+		move_index = 0;
+
+		register_move = !register_move;
+
+		if (start_move && register_move) {
+			was_test_performed = FALSE;
+		}
+		send_string(register_move ? "TRUE\n" : "FALSE\n");
+	}
+}
+
+void s2_button_pushed(void)
+{
+	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1) == GPIO_PIN_RESET)
+	{
+		send_string("S2 ON\n");
+		send_string("Manipulator movement start..\n");
+		start_move = !start_move;
+
+		if (register_move && start_move) {
+			was_test_performed = FALSE;
+		}
+		send_string(start_move ? "TRUE\n" : "FALSE\n");
+	}
+}
+
+void clk_button_pushed(void)
+{
+	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2) == GPIO_PIN_RESET)
+	{
+		send_string("JOYSTICK FORWARD ON\n");
+		send_string("CLOCKWISE! START\n");
+
+		current_move.direction = CLOCKWISE;
+		in_move = TRUE;
+	}
+}
+
+void ant_button_pushed(void)
+{
+	if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_3) == GPIO_PIN_RESET)
+	{
+		send_string("JOYSTICK BACKWARD ON\n");
+		send_string("ANTICLOCKWISE! START\n");
+
+		current_move.direction = ANTICLOCKWISE;
+		in_move = TRUE;
+	}
+}
+
+//	if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_3) == GPIO_PIN_SET && HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_2) == GPIO_PIN_SET)
+//	{
+//		send_string("JOYSTICK MIDDLE POSITION\n");
+//		send_string("STPOP MOVE \n");
+//
+////		was_test_performed = FALSE;
+//		in_move = FALSE;
+//	}
+
+void f2_button_pushed(void)
+{
+	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5) == GPIO_PIN_RESET)
+	{
+		send_string("AXIS F2 ON\n");
+
+		current_move.axis = F2;
+	}
+}
+
+void u_button_pushed(void)
+{
+	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == GPIO_PIN_RESET)
+	{
+		send_string("AXIS U ON\n");
+
+		current_move.axis = U;
+	}
+}
+
 
 void F1_start_clk() {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
@@ -690,7 +776,7 @@ int main(void)
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_2, SET);
 	while(1)
 	{
-		check_input_status();
+//		check_input_status();
 //		sprintf(message, "T1 = %d\n", TIM1->CNT);
 //		send_string(message);
 //		sprintf(message, "T2 = %d\n", TIM2->CNT);
